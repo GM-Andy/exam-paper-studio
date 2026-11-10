@@ -51,6 +51,7 @@ interface NoteItem {
   semester: string;
   subject_name: string;
   subject_code: string;
+  code_missing?: boolean;
 }
 
 interface HistoryBatch {
@@ -87,6 +88,8 @@ interface SessionState {
   total_notes: number;
   total_active_papers: number;
   history_count: number;
+  has_missing_codes?: boolean;
+  missing_codes_count?: number;
 }
 
 export default function App() {
@@ -218,6 +221,23 @@ export default function App() {
     });
   };
 
+  const handleSaveCourseCode = async (noteId: string, newCode: string) => {
+    if (!newCode.trim()) return;
+    try {
+      const res = await fetch(`/api/notes/${noteId}/update-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject_code: newCode.trim().toUpperCase() })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSession(data);
+      }
+    } catch (e) {
+      console.error('Error saving course code:', e);
+    }
+  };
+
   const handleToggleNote = async (noteId: string, currentSelected: boolean) => {
     try {
       const res = await fetch('/api/notes/toggle-select', {
@@ -302,6 +322,13 @@ export default function App() {
     if (!session || session.total_active_notes === 0) {
       alert('Please select at least one note to generate examination papers.');
       return;
+    }
+    if (session.has_missing_codes) {
+      const confirmContinue = confirm(
+        `Notice: ${session.missing_codes_count} selected note(s) are missing official course codes.\n\n` +
+        'Please enter the codes on the note card(s) or click OK to generate with auto-generated placeholder codes.'
+      );
+      if (!confirmContinue) return;
     }
     setGenerating(true);
     setProgress({ percent: 5, stage: 'starting', message: 'Analyzing selected notes and university format...' });
@@ -611,12 +638,52 @@ export default function App() {
                                   </span>
                                 )}
                               </div>
-                              <div className="flex items-center gap-2 text-[10px] text-palette-slate font-medium">
+                              <div className="flex items-center gap-2 text-[10px] text-palette-slate font-medium mb-1">
                                 <span className="font-mono bg-palette-cream px-1 py-0.2 rounded border border-palette-slate/20">
                                   {n.program_name} • Sem {n.semester}
                                 </span>
                                 <span>{n.total_pages}p</span>
                               </div>
+
+                              {/* Course Code Input / Missing Warning */}
+                              {n.code_missing || !n.subject_code ? (
+                                <div className="mt-1 flex items-center gap-1.5 p-1.5 bg-amber-50 rounded-lg border border-amber-300">
+                                  <span className="text-[10px] font-mono font-bold text-amber-800">
+                                    ⚠️ Code:
+                                  </span>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter Code (e.g. BC101)"
+                                    defaultValue=""
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        handleSaveCourseCode(n.id, (e.target as HTMLInputElement).value);
+                                      }
+                                    }}
+                                    onBlur={(e) => {
+                                      if (e.target.value.trim()) {
+                                        handleSaveCourseCode(n.id, e.target.value);
+                                      }
+                                    }}
+                                    className="w-full text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 bg-white border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-palette-coral"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="mt-1 flex items-center gap-1.5 text-[10px] font-mono">
+                                  <span className="text-palette-slate font-medium">Code:</span>
+                                  <input
+                                    type="text"
+                                    defaultValue={n.subject_code}
+                                    onBlur={(e) => {
+                                      if (e.target.value.trim() && e.target.value.trim() !== n.subject_code) {
+                                        handleSaveCourseCode(n.id, e.target.value);
+                                      }
+                                    }}
+                                    className="w-20 text-[10px] font-mono font-bold uppercase px-1 py-0.2 bg-palette-cream hover:bg-white border border-palette-slate/30 focus:border-palette-slate rounded"
+                                    title="Click to edit course code"
+                                  />
+                                </div>
+                              )}
                             </div>
                           </div>
 
@@ -765,37 +832,76 @@ export default function App() {
                     Direct the model to prioritize specific units, course codes, or focus areas.
                   </p>
 
+                  {/* Explicit Scope Filter */}
+                  <div className="flex items-center justify-between text-[11px] mb-2 bg-palette-cream px-2 py-1 rounded-lg border border-palette-slate/30">
+                    <span className="font-semibold text-palette-slate-dark">Target Subject:</span>
+                    <select
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === 'ALL') {
+                          setPromptText('Generate Set A and Set B for all selected notes.');
+                        } else {
+                          setPromptText(`Only generate examination papers for ${val}. Exclude all other notes from this run.`);
+                        }
+                      }}
+                      className="text-[10px] font-mono bg-white border border-palette-slate/40 rounded px-1.5 py-0.5 max-w-[170px] truncate"
+                    >
+                      <option value="ALL">All Selected Notes ({activeNotesCount})</option>
+                      {session?.notes?.filter(n => n.selected).map(n => (
+                        <option key={n.id} value={n.subject_code ? `${n.subject_code} (${n.subject_name})` : n.subject_name}>
+                          Only: {n.subject_code ? `${n.subject_code} - ` : ''}{n.subject_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <textarea
                     value={promptText}
                     onChange={(e) => setPromptText(e.target.value)}
                     rows={3}
-                    className="w-full text-xs p-3 rounded-xl border border-palette-slate bg-palette-cream/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-palette-coral resize-none mb-2"
-                    placeholder="e.g. Generate Set A and Set B for the selected notes. Focus Section C on Indian context..."
+                    className="w-full text-xs p-2.5 rounded-xl border border-palette-slate bg-palette-cream/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-palette-coral resize-none mb-2"
+                    placeholder="e.g. Only generate for course code BC101... or Focus questions on Units 1 and 2..."
                   />
 
-                  {/* Quick Pill Templates */}
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    <button
-                      type="button"
-                      onClick={() => setPromptText('Prepare Set A and Set B for B.Com Semester 1 following the guidelines.')}
-                      className="text-[10px] font-medium bg-palette-ice hover:bg-palette-ice-dark px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
-                    >
-                      B.Com Sem 1
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPromptText('Prepare Set A and Set B for MA Sociology with high analytical rigor in Section B.')}
-                      className="text-[10px] font-medium bg-palette-mint hover:bg-palette-mint-dark px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
-                    >
-                      MA Sociology Bilingual
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPromptText('Ensure 75% difference between Set A and Set B. Double check Hindi translations.')}
-                      className="text-[10px] font-medium bg-palette-coral-light hover:bg-palette-coral px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
-                    >
-                      Strict 75% Difference
-                    </button>
+                  {/* Explicit Default Prompt Presets */}
+                  <div className="space-y-1 mb-3">
+                    <span className="text-[10px] font-mono text-palette-slate block uppercase">Quick Presets:</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const firstCode = session?.notes?.find(n => n.selected && n.subject_code)?.subject_code || 'BC101';
+                          setPromptText(`Only generate examination papers for course code: ${firstCode}. Ignore all other subjects.`);
+                        }}
+                        className="text-[10px] font-medium bg-palette-ice hover:bg-palette-ice-dark px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
+                      >
+                        🎯 Only Specific Code
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const firstSubj = session?.notes?.find(n => n.selected)?.subject_name || 'Business Law';
+                          setPromptText(`Only prepare Set A and Set B for subject: ${firstSubj}.`);
+                        }}
+                        className="text-[10px] font-medium bg-palette-mint hover:bg-palette-mint-dark px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
+                      >
+                        🎯 Specific Subject
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPromptText('Focus all questions in Section A, B, and C strictly on Units 1 and 2.')}
+                        className="text-[10px] font-medium bg-palette-cream hover:bg-palette-ice px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
+                      >
+                        🎯 Units 1 & 2 Only
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPromptText('Ensure 75% difference between Set A and Set B. Verify Devanagari Hindi translations.')}
+                        className="text-[10px] font-medium bg-palette-coral-light hover:bg-palette-coral px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
+                      >
+                        Strict 75% Difference
+                      </button>
+                    </div>
                   </div>
 
                 </div>

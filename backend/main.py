@@ -81,10 +81,14 @@ class ToggleSelectRequest(BaseModel):
     note_id: str
     selected: bool
 
-def infer_program_and_semester(note_info: dict, user_instruction: str = "") -> Tuple[str, str, str, str]:
+class UpdateNoteCodeRequest(BaseModel):
+    subject_code: str
+    subject_name: Optional[str] = None
+
+def infer_program_and_semester(note_info: dict, user_instruction: str = "") -> Tuple[str, str, str, str, bool]:
     """
-    Dynamically identifies program, semester, subject name, and course code
-    from the note filename, first page, and user prompt.
+    Dynamically identifies program, semester, subject name, course code,
+    and whether the course code is missing.
     """
     fname = note_info.get("file_name", "")
     preview = note_info.get("first_page_preview", "")
@@ -140,11 +144,17 @@ def infer_program_and_semester(note_info: dict, user_instruction: str = "") -> T
     code_match = re.search(r'\b([A-Z][0-9]{6}[A-Z]?|[A-Z]{2,4}[- ]?[0-9]{3,4})\b', fname)
     if code_match:
         subj_code = code_match.group(1).replace(" ", "")
+        code_missing = False
     else:
-        prefix = "".join([w[0].upper() for w in subj_name.split() if w])[:3] or "SUB"
-        subj_code = f"{prefix}101"
+        code_match_preview = re.search(r'\b([A-Z][0-9]{6}[A-Z]?|[A-Z]{2,4}[- ]?[0-9]{3,4})\b', preview)
+        if code_match_preview:
+            subj_code = code_match_preview.group(1).replace(" ", "")
+            code_missing = False
+        else:
+            subj_code = ""
+            code_missing = True
 
-    return program_name, semester, subj_name, subj_code
+    return program_name, semester, subj_name, subj_code, code_missing
 
 def serialize_paper(p: ExamPaper) -> dict:
     clean_subj = re.sub(r'[^\w\s-]', '', p.subject_name).replace(" ", "_")
@@ -217,11 +227,12 @@ def load_sample_data():
             note_info["path"] = str(f)
             note_info["selected"] = True
             note_info["uploaded_at"] = time.time()
-            prog, sem, sname, scode = infer_program_and_semester(note_info)
+            prog, sem, sname, scode, missing = infer_program_and_semester(note_info)
             note_info["program_name"] = prog
             note_info["semester"] = sem
             note_info["subject_name"] = sname
             note_info["subject_code"] = scode
+            note_info["code_missing"] = missing
             state["notes"].append(note_info)
 
     return get_session_state()
@@ -238,7 +249,17 @@ def get_session_state(clean: Optional[bool] = False):
     active_count = len(active_notes)
     marks = state["guidelines"].get("marks_format", 70) if state["guidelines"] else 70
 
-    if active_count > 0:
+    active_missing_codes = [n for n in active_notes if n.get("code_missing", False) or not n.get("subject_code")]
+    has_missing_codes = len(active_missing_codes) > 0
+
+    if has_missing_codes:
+        missing_names = ", ".join([f'"{n["file_name"]}"' for n in active_missing_codes[:2]])
+        interpretation = (
+            f"⚠️ Course code missing: Could not find an official university course code in {missing_names}.\n"
+            f"Please enter the course code (e.g. BC101) directly on the note card below "
+            f"so it correctly prints on your official examination paper header."
+        )
+    elif active_count > 0:
         subjects_preview = ", ".join([n.get("subject_name", n["file_name"])[:25] for n in active_notes[:3]])
         if active_count > 3:
             subjects_preview += f" and {active_count - 3} more"
@@ -285,7 +306,8 @@ def get_session_state(clean: Optional[bool] = False):
                 "program_name": n.get("program_name", "Undergraduate"),
                 "semester": n.get("semester", "I"),
                 "subject_name": n.get("subject_name", n["file_name"]),
-                "subject_code": n.get("subject_code", "GEN101")
+                "subject_code": n.get("subject_code", ""),
+                "code_missing": n.get("code_missing", False) or not n.get("subject_code")
             }
             for n in sorted_notes
         ],
@@ -296,8 +318,21 @@ def get_session_state(clean: Optional[bool] = False):
         "total_active_notes": active_count,
         "total_notes": total_notes_count,
         "total_active_papers": len(state["papers"]),
-        "history_count": len(state["history"])
+        "history_count": len(state["history"]),
+        "has_missing_codes": has_missing_codes,
+        "missing_codes_count": len(active_missing_codes)
     }
+
+@app.post("/api/notes/{note_id}/update-code")
+def update_note_code(note_id: str, req: UpdateNoteCodeRequest):
+    for n in state["notes"]:
+        if n.get("id") == note_id or n.get("file_name") == note_id:
+            n["subject_code"] = req.subject_code.strip().upper()
+            n["code_missing"] = False
+            if req.subject_name:
+                n["subject_name"] = req.subject_name.strip()
+            break
+    return get_session_state()
 
 @app.post("/api/notes/toggle-select")
 def toggle_note_select(req: ToggleSelectRequest):
@@ -347,11 +382,12 @@ async def upload_notes(files: List[UploadFile] = File(...)):
             info["path"] = str(fpath)
             info["selected"] = True
             info["uploaded_at"] = time.time()
-            prog, sem, sname, scode = infer_program_and_semester(info)
+            prog, sem, sname, scode, missing = infer_program_and_semester(info)
             info["program_name"] = prog
             info["semester"] = sem
             info["subject_name"] = sname
             info["subject_code"] = scode
+            info["code_missing"] = missing
             # Insert at beginning so newly uploaded is on top
             state["notes"].insert(0, info)
             
@@ -396,10 +432,35 @@ def _run_generation_job(subject_codes: Optional[List[str]], marks_format: int, i
             if soc_notes:
                 active_notes = soc_notes
 
+        # 2b. Course Code Filtering: e.g. "Only generate for BC101" or "codes A070901T, A070902T"
+        explicit_codes = re.findall(r'\b([A-Z][0-9]{6}[A-Z]?|[A-Z]{2,4}[- ]?[0-9]{3,4})\b', user_instruction, re.IGNORECASE)
+        if explicit_codes:
+            clean_codes = [c.replace(" ", "").lower() for c in explicit_codes]
+            matched = [n for n in active_notes if (n.get("subject_code") or "").lower() in clean_codes or any(c in n.get("file_name", "").lower() for c in clean_codes)]
+            if matched:
+                active_notes = matched
+
+        # 2c. Specific Subject Title: e.g. "only for Modern Sociological Theories"
+        if any(k in instruction_lower for k in ["only", "target", "focus on subject", "specifically"]):
+            matched_by_title = []
+            for n in active_notes:
+                s_name = (n.get("subject_name") or "").lower()
+                words = [w for w in re.split(r'[\s_&,-]+', s_name) if len(w) > 3]
+                if words and any(w in instruction_lower for w in words):
+                    matched_by_title.append(n)
+            if matched_by_title:
+                active_notes = matched_by_title
+
     # 3. Associate notes with subject metadata
     targets = []
     for note in active_notes:
-        prog, sem, sname, scode = infer_program_and_semester(note, user_instruction)
+        prog, sem, sname, scode, missing = infer_program_and_semester(note, user_instruction)
+        # Use existing updated codes/names if available
+        if note.get("subject_code"):
+            scode = note["subject_code"]
+        if note.get("subject_name"):
+            sname = note["subject_name"]
+
         # Check if subject code or name matches guidelines subjects
         matched_from_guidelines = None
         for s in state["subjects"]:
@@ -410,6 +471,9 @@ def _run_generation_job(subject_codes: Optional[List[str]], marks_format: int, i
         if matched_from_guidelines:
             sname = matched_from_guidelines["name"]
             scode = matched_from_guidelines["code"]
+
+        if not scode:
+            scode = f"SUB{abs(hash(sname)) % 900 + 100}"
 
         targets.append({
             "subject_code": scode,
