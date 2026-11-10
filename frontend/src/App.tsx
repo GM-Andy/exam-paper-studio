@@ -217,7 +217,7 @@ export default function App() {
       particleCount: 80,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#FFA69E', '#B8F2E6', '#AED9E0', '#5E6472']
+      colors: ['#F6440E', '#2E2A14', '#777972', '#FAF4F0']
     });
   };
 
@@ -404,26 +404,26 @@ export default function App() {
   const totalNotesCount = session?.total_notes || 0;
 
   return (
-    <div className="min-h-screen bg-palette-cream text-palette-slate-dark bg-dot-pattern flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FCF9F5] text-[#2E2A14] flex flex-col font-sans selection:bg-[#F6440E]/20 selection:text-[#2E2A14]">
       
-      {/* 1. Header Navigation Dock */}
-      <header className="sticky top-0 z-40 bg-palette-cream/90 backdrop-blur-md border-b-1.5 border-palette-slate px-4 lg:px-8 py-3 transition-all">
+      {/* 1. Header Navigation Dock — Framer Tomasfolio Style */}
+      <header className="sticky top-0 z-40 bg-[#FCF9F5]/90 backdrop-blur-md border-b border-[rgba(46,42,20,0.1)] px-4 lg:px-8 py-3.5 transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-palette-coral border-1.5 border-palette-slate flex items-center justify-center shadow-tactile-sm">
-              <BookOpen className="w-5 h-5 text-palette-slate-dark" />
+            <div className="w-9 h-9 rounded-xl bg-[#2E2A14] flex items-center justify-center text-white shadow-sm">
+              <BookOpen className="w-4 h-4 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-serif font-bold text-xl tracking-tight text-palette-slate-dark">
+                <span className="font-semibold text-lg tracking-[-0.03em] text-[#2E2A14]">
                   Exam Paper Studio
                 </span>
-                <span className="text-[11px] font-mono uppercase tracking-wider bg-palette-mint text-palette-slate-dark px-2 py-0.5 rounded-full border border-palette-slate font-semibold">
+                <span className="text-[10px] font-mono uppercase tracking-wider bg-[rgba(46,42,20,0.06)] text-[#777972] px-2 py-0.5 rounded-full border border-[rgba(46,42,20,0.12)] font-semibold">
                   v2.5
                 </span>
               </div>
-              <p className="text-xs text-palette-slate font-medium hidden sm:block">
+              <p className="text-xs text-[#777972] font-normal hidden sm:block">
                 Academic Document Automation & Layout Engine
               </p>
             </div>
@@ -432,20 +432,22 @@ export default function App() {
           {/* Tab Switcher & Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Top Workspace Tabs */}
-            <div className="flex items-center bg-palette-cream-card rounded-xl border-1.5 border-palette-slate p-0.5 shadow-tactile-sm">
+            {/* Top Workspace Tabs — Framer Pill Style */}
+            <div className="flex items-center bg-[rgba(46,42,20,0.04)] rounded-full border border-[rgba(46,42,20,0.1)] p-0.5">
               <button
                 onClick={() => setActiveTab('studio')}
-                className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all cursor-pointer ${
                   activeTab === 'studio' 
-                    ? 'bg-palette-slate-dark text-white' 
-                    : 'text-palette-slate hover:text-palette-slate-dark'
+                    ? 'bg-[#2E2A14] text-white shadow-sm' 
+                    : 'text-[#777972] hover:text-[#2E2A14]'
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
                 <span>Active Studio</span>
                 {activeNotesCount > 0 && (
-                  <span className="ml-1 text-[10px] font-mono bg-palette-mint text-palette-slate-dark px-1.5 py-0.2 rounded-full font-bold">
+                  <span className={`ml-1 text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                    activeTab === 'studio' ? 'bg-[#F6440E] text-white' : 'bg-[rgba(46,42,20,0.1)] text-[#2E2A14]'
+                  }`}>
                     {activeNotesCount}
                   </span>
                 )}
@@ -453,16 +455,18 @@ export default function App() {
 
               <button
                 onClick={() => setActiveTab('history')}
-                className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all cursor-pointer ${
                   activeTab === 'history' 
-                    ? 'bg-palette-slate-dark text-white' 
-                    : 'text-palette-slate hover:text-palette-slate-dark'
+                    ? 'bg-[#2E2A14] text-white shadow-sm' 
+                    : 'text-[#777972] hover:text-[#2E2A14]'
                 }`}
               >
                 <History className="w-3.5 h-3.5" />
                 <span>Previous Generations</span>
                 {history.length > 0 && (
-                  <span className="ml-1 text-[10px] font-mono bg-palette-ice text-palette-slate-dark px-1.5 py-0.2 rounded-full font-bold">
+                  <span className={`ml-1 text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                    activeTab === 'history' ? 'bg-[#F6440E] text-white' : 'bg-[rgba(46,42,20,0.1)] text-[#2E2A14]'
+                  }`}>
                     {history.length}
                   </span>
                 )}
@@ -474,7 +478,7 @@ export default function App() {
               onClick={handleLoadSample}
               disabled={loading}
               title="Loads sample MA Sociology notes and university guidelines"
-              className="tactile-btn text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-palette-ice hover:bg-palette-ice-dark text-palette-slate-dark hidden md:flex items-center gap-1 cursor-pointer disabled:opacity-50"
+              className="tomas-btn-secondary text-xs px-3 py-1.5 rounded-full hidden md:flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               <RotateCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
               <span>Load Sample</span>
@@ -484,7 +488,7 @@ export default function App() {
             <button
               onClick={handleResetWorkspace}
               title="Clears the current active workspace"
-              className="tactile-btn text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-palette-cream-card hover:bg-white text-palette-slate hover:text-red-600 border-1.5 border-palette-slate flex items-center gap-1 cursor-pointer"
+              className="tomas-btn-secondary text-xs px-3 py-1.5 rounded-full hover:text-[#F6440E] hover:border-[#F6440E]/40 flex items-center gap-1.5 cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Start Fresh</span>
@@ -495,7 +499,7 @@ export default function App() {
               <a
                 href="/api/download-all"
                 onClick={triggerConfetti}
-                className="tactile-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-palette-coral hover:bg-palette-coral-hover text-palette-slate-dark flex items-center gap-1.5 cursor-pointer"
+                className="tomas-btn-primary text-xs px-4 py-1.5 rounded-full flex items-center gap-1.5 cursor-pointer"
               >
                 <FileArchive className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Download All (ZIP)</span>
@@ -509,57 +513,57 @@ export default function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-8">
 
         {/* ================= TAB 1: ACTIVE STUDIO ================= */}
         {activeTab === 'studio' && (
           <>
-            {/* Minimal Punchy Hero */}
-            <div className="text-center max-w-3xl mx-auto space-y-2 pt-2 pb-1">
-              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-palette-slate-dark tracking-tight leading-tight">
-                Your exam papers, <span className="italic font-normal text-palette-slate">ready in minutes.</span>
+            {/* Minimal Punchy Hero — Editorial Two-Tone Statement */}
+            <div className="text-center max-w-3xl mx-auto space-y-3 pt-2 pb-2">
+              <h1 className="text-3xl sm:text-5xl font-semibold text-[#2E2A14] tracking-[-0.035em] leading-[1.05]">
+                Your exam papers, <span className="text-[#F6440E]">ready in minutes.</span>
               </h1>
-              <p className="text-xs sm:text-sm text-palette-slate max-w-xl mx-auto">
+              <p className="text-xs sm:text-sm text-[#777972] max-w-xl mx-auto leading-relaxed">
                 Upload notes and guidelines. Select which files to include. Generate official Word & PDF papers with strict 2-page verification.
               </p>
             </div>
 
-            {/* 3-Zone Tactile Bento Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {/* 3-Zone Bento Grid — Tomasfolio Refined Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               {/* Zone 1: Active Notes & Selection */}
-              <div className="tactile-card bg-palette-cream-card rounded-2xl p-5 flex flex-col justify-between border-1.5 border-palette-slate space-y-4">
+              <div className="tomas-card p-6 flex flex-col justify-between space-y-5">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-palette-ice border border-palette-slate flex items-center justify-center font-bold text-xs">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-[#2E2A14] text-white flex items-center justify-center font-mono text-xs font-semibold">
                         1
                       </div>
-                      <h3 className="font-serif font-bold text-base text-palette-slate-dark">
+                      <h3 className="font-semibold text-lg tracking-[-0.02em] text-[#2E2A14]">
                         Notes & Syllabus
                       </h3>
                     </div>
 
                     {/* Selection Controls */}
                     {totalNotesCount > 0 && (
-                      <div className="flex items-center gap-1.5 text-[11px]">
+                      <div className="flex items-center gap-2 text-[11px]">
                         <button
                           onClick={() => handleSelectAllNotes(true)}
-                          className="text-palette-slate hover:text-palette-slate-dark font-medium underline cursor-pointer"
+                          className="text-[#777972] hover:text-[#2E2A14] font-medium transition-colors cursor-pointer"
                         >
                           All
                         </button>
-                        <span className="text-palette-slate/40">·</span>
+                        <span className="text-[rgba(46,42,20,0.2)]">/</span>
                         <button
                           onClick={() => handleSelectAllNotes(false)}
-                          className="text-palette-slate hover:text-palette-slate-dark font-medium underline cursor-pointer"
+                          className="text-[#777972] hover:text-[#2E2A14] font-medium transition-colors cursor-pointer"
                         >
                           None
                         </button>
-                        <span className="text-palette-slate/40">·</span>
+                        <span className="text-[rgba(46,42,20,0.2)]">/</span>
                         <button
                           onClick={handleClearAllNotes}
-                          className="text-red-500 hover:text-red-700 font-medium cursor-pointer"
+                          className="text-[#777972] hover:text-[#F6440E] font-medium transition-colors cursor-pointer"
                           title="Remove all uploaded notes"
                         >
                           Clear
@@ -568,22 +572,22 @@ export default function App() {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between mb-3 text-xs">
-                    <span className="font-medium text-palette-slate">
+                  <div className="flex items-center justify-between mb-3.5 text-xs">
+                    <span className="text-[#777972]">
                       {activeNotesCount} of {totalNotesCount} notes selected for generation
                     </span>
                     {totalNotesCount > 0 && (
-                      <span className="font-mono text-[10px] bg-palette-mint text-palette-slate-dark px-1.5 py-0.5 rounded font-bold border border-palette-slate/30">
+                      <span className="font-mono text-[10px] bg-[rgba(46,42,20,0.06)] text-[#2E2A14] px-2 py-0.5 rounded-full font-semibold border border-[rgba(46,42,20,0.1)]">
                         {activeNotesCount > 0 ? 'READY' : 'SELECT NOTES'}
                       </span>
                     )}
                   </div>
 
                   {/* Upload Dropzone */}
-                  <label className="border-2 border-dashed border-palette-slate/40 hover:border-palette-slate rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-palette-cream/40 mb-3">
-                    <Upload className="w-5 h-5 text-palette-slate mb-1" />
-                    <span className="text-xs font-semibold text-palette-slate-dark">Upload notes (PDF/DOCX)</span>
-                    <span className="text-[10px] text-palette-slate/70">Recently uploaded appears on top</span>
+                  <label className="border border-dashed border-[rgba(46,42,20,0.2)] hover:border-[#F6440E] rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all bg-[rgba(46,42,20,0.015)] hover:bg-[rgba(246,68,14,0.02)] mb-4">
+                    <Upload className="w-5 h-5 text-[#777972] mb-1.5" />
+                    <span className="text-xs font-semibold text-[#2E2A14]">Upload notes (PDF/DOCX)</span>
+                    <span className="text-[10px] text-[#777972] mt-0.5">Recently uploaded appears on top</span>
                     <input 
                       type="file" 
                       multiple 
@@ -607,10 +611,10 @@ export default function App() {
                       {session.notes.map((n, i) => (
                         <div 
                           key={n.id || i}
-                          className={`p-2.5 rounded-xl border transition-all flex items-start justify-between gap-2.5 ${
+                          className={`p-3 rounded-xl border transition-all flex items-start justify-between gap-3 ${
                             n.selected 
-                              ? 'bg-palette-mint-light/40 border-palette-mint-dark shadow-sm' 
-                              : 'bg-palette-cream/40 border-palette-slate/30 opacity-70'
+                              ? 'bg-[#FAF4F0]/80 border-[rgba(46,42,20,0.2)] shadow-xs' 
+                              : 'bg-white border-[rgba(46,42,20,0.08)] opacity-60'
                           }`}
                         >
                           <div className="flex items-start gap-2.5 flex-1 min-w-0">
@@ -618,28 +622,28 @@ export default function App() {
                             <button
                               type="button"
                               onClick={() => handleToggleNote(n.id, n.selected)}
-                              className="mt-0.5 text-palette-slate-dark cursor-pointer shrink-0"
+                              className="mt-0.5 text-[#2E2A14] cursor-pointer shrink-0"
                             >
                               {n.selected ? (
-                                <CheckSquare className="w-4 h-4 text-emerald-700" />
+                                <CheckSquare className="w-4 h-4 text-[#F6440E]" />
                               ) : (
-                                <Square className="w-4 h-4 text-palette-slate" />
+                                <Square className="w-4 h-4 text-[#777972]" />
                               )}
                             </button>
 
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 mb-0.5">
-                                <span className="font-semibold text-xs text-palette-slate-dark truncate block max-w-[150px]" title={n.file_name}>
+                              <div className="flex items-center gap-1.5 mb-1">
+                                <span className="font-semibold text-xs text-[#2E2A14] truncate block max-w-[150px]" title={n.file_name}>
                                   {n.file_name}
                                 </span>
                                 {i === 0 && (
-                                  <span className="text-[9px] font-mono uppercase bg-palette-coral text-palette-slate-dark px-1 py-0.2 rounded font-bold border border-palette-slate/30">
+                                  <span className="text-[9px] font-mono uppercase bg-[#F6440E] text-white px-1.5 py-0.2 rounded font-bold">
                                     NEW
                                   </span>
                                 )}
                               </div>
-                              <div className="flex items-center gap-2 text-[10px] text-palette-slate font-medium mb-1">
-                                <span className="font-mono bg-palette-cream px-1 py-0.2 rounded border border-palette-slate/20">
+                              <div className="flex items-center gap-2 text-[10px] text-[#777972] font-medium mb-1.5">
+                                <span className="font-mono bg-[rgba(46,42,20,0.05)] text-[#2E2A14] px-1.5 py-0.5 rounded border border-[rgba(46,42,20,0.1)]">
                                   {n.program_name} • Sem {n.semester}
                                 </span>
                                 <span>{n.total_pages}p</span>
@@ -647,8 +651,8 @@ export default function App() {
 
                               {/* Course Code Input / Missing Warning */}
                               {n.code_missing || !n.subject_code ? (
-                                <div className="mt-1 flex items-center gap-1.5 p-1.5 bg-amber-50 rounded-lg border border-amber-300">
-                                  <span className="text-[10px] font-mono font-bold text-amber-800">
+                                <div className="mt-1.5 flex items-center gap-1.5 p-1.5 bg-[#FFF6ED] rounded-lg border border-[#F6440E]/30">
+                                  <span className="text-[10px] font-mono font-bold text-[#F6440E]">
                                     ⚠️ Code:
                                   </span>
                                   <input
@@ -665,12 +669,12 @@ export default function App() {
                                         handleSaveCourseCode(n.id, e.target.value);
                                       }
                                     }}
-                                    className="w-full text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 bg-white border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-palette-coral"
+                                    className="w-full text-[10px] font-mono font-bold uppercase px-2 py-0.5 bg-white border border-[#F6440E]/40 rounded focus:outline-none focus:border-[#F6440E]"
                                   />
                                 </div>
                               ) : (
                                 <div className="mt-1 flex items-center gap-1.5 text-[10px] font-mono">
-                                  <span className="text-palette-slate font-medium">Code:</span>
+                                  <span className="text-[#777972]">Code:</span>
                                   <input
                                     type="text"
                                     defaultValue={n.subject_code}
@@ -679,7 +683,7 @@ export default function App() {
                                         handleSaveCourseCode(n.id, e.target.value);
                                       }
                                     }}
-                                    className="w-20 text-[10px] font-mono font-bold uppercase px-1 py-0.2 bg-palette-cream hover:bg-white border border-palette-slate/30 focus:border-palette-slate rounded"
+                                    className="w-24 text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 bg-white border border-[rgba(46,42,20,0.15)] focus:border-[#2E2A14] rounded"
                                     title="Click to edit course code"
                                   />
                                 </div>
@@ -691,7 +695,7 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => handleDeleteNote(n.id)}
-                            className="text-palette-slate/50 hover:text-red-600 p-1 rounded transition-colors cursor-pointer shrink-0"
+                            className="text-[#777972] hover:text-[#F6440E] p-1 rounded transition-colors cursor-pointer shrink-0"
                             title="Remove file"
                           >
                             <X className="w-3.5 h-3.5" />
@@ -700,7 +704,7 @@ export default function App() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-5 text-xs text-palette-slate/60 bg-palette-cream/30 rounded-xl border border-dashed border-palette-slate/30">
+                    <div className="text-center py-6 text-xs text-[#777972] bg-[rgba(46,42,20,0.02)] rounded-xl border border-dashed border-[rgba(46,42,20,0.15)]">
                       No notes uploaded yet. Drop notes above or click "Load Sample".
                     </div>
                   )}
@@ -709,69 +713,69 @@ export default function App() {
               </div>
 
               {/* Zone 2: Active Exam Guidelines */}
-              <div className="tactile-card bg-palette-cream-card rounded-2xl p-5 flex flex-col justify-between border-1.5 border-palette-slate space-y-4">
+              <div className="tomas-card p-6 flex flex-col justify-between space-y-5">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-palette-mint border border-palette-slate flex items-center justify-center font-bold text-xs">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-[#2E2A14] text-white flex items-center justify-center font-mono text-xs font-semibold">
                         2
                       </div>
-                      <h3 className="font-serif font-bold text-base text-palette-slate-dark">
+                      <h3 className="font-semibold text-lg tracking-[-0.02em] text-[#2E2A14]">
                         Exam Guidelines in Use
                       </h3>
                     </div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-palette-slate bg-palette-slate-subtle px-1.5 py-0.5 rounded border border-palette-slate/30">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#777972] bg-[rgba(46,42,20,0.06)] px-2 py-0.5 rounded-full border border-[rgba(46,42,20,0.1)]">
                       Active Rules
                     </span>
                   </div>
 
-                  <p className="text-xs text-palette-slate mb-3">
+                  <p className="text-xs text-[#777972] mb-3.5 leading-relaxed">
                     University marking format, bilingual translation, and Word template specifications.
                   </p>
 
                   {/* Prominent Guidelines Summary Card */}
                   {session?.guidelines ? (
-                    <div className="bg-palette-cream/70 rounded-xl p-3 border border-palette-slate/40 space-y-2.5">
+                    <div className="bg-[#FAF4F0]/80 rounded-xl p-4 border border-[rgba(46,42,20,0.14)] space-y-3">
                       
-                      <div className="flex items-center justify-between pb-2 border-b border-palette-slate/20">
+                      <div className="flex items-center justify-between pb-2.5 border-b border-[rgba(46,42,20,0.1)]">
                         <div>
-                          <span className="text-[10px] font-mono uppercase tracking-wider text-palette-slate block">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-[#777972] block">
                             Document Template
                           </span>
-                          <span className="text-xs font-bold text-palette-slate-dark flex items-center gap-1">
-                            <FileText className="w-3.5 h-3.5 text-palette-slate" />
+                          <span className="text-xs font-bold text-[#2E2A14] flex items-center gap-1.5 mt-0.5">
+                            <FileText className="w-3.5 h-3.5 text-[#F6440E]" />
                             {session.guidelines.template_name}
                           </span>
                         </div>
-                        <span className="text-xs font-mono font-bold bg-palette-coral px-2 py-0.5 rounded border border-palette-slate text-palette-slate-dark">
+                        <span className="text-xs font-mono font-bold bg-[#2E2A14] text-white px-2.5 py-0.5 rounded-full">
                           {session.guidelines.marks_format} Marks
                         </span>
                       </div>
 
                       {/* Constraints Grid */}
-                      <div className="grid grid-cols-2 gap-2 text-[11px]">
-                        <div className="bg-white/80 p-2 rounded-lg border border-palette-slate/20">
-                          <span className="text-palette-slate block text-[10px]">Difference Rule</span>
-                          <span className="font-semibold text-emerald-800">≥75% Difference</span>
-                          <span className="text-[9px] text-palette-slate/80 block">≤25% common questions</span>
+                      <div className="grid grid-cols-2 gap-2.5 text-[11px]">
+                        <div className="bg-white p-2.5 rounded-lg border border-[rgba(46,42,20,0.1)]">
+                          <span className="text-[#777972] block text-[10px]">Difference Rule</span>
+                          <span className="font-semibold text-[#2E2A14]">≥75% Difference</span>
+                          <span className="text-[9px] text-[#777972] block mt-0.5">≤25% common questions</span>
                         </div>
-                        <div className="bg-white/80 p-2 rounded-lg border border-palette-slate/20">
-                          <span className="text-palette-slate block text-[10px]">Page Limit</span>
-                          <span className="font-semibold text-emerald-800">Strictly 2 Pages</span>
-                          <span className="text-[9px] text-palette-slate/80 block">Verified on PDF</span>
+                        <div className="bg-white p-2.5 rounded-lg border border-[rgba(46,42,20,0.1)]">
+                          <span className="text-[#777972] block text-[10px]">Page Limit</span>
+                          <span className="font-semibold text-[#2E2A14]">Strictly 2 Pages</span>
+                          <span className="text-[9px] text-[#777972] block mt-0.5">Verified on PDF</span>
                         </div>
                       </div>
 
                       {/* Section Structure Chips */}
-                      <div className="space-y-1 pt-1">
-                        <span className="text-[10px] font-mono text-palette-slate uppercase tracking-wider block">
+                      <div className="space-y-1.5 pt-1">
+                        <span className="text-[10px] font-mono text-[#777972] uppercase tracking-wider block">
                           Sections Breakdown
                         </span>
                         <div className="space-y-1">
                           {session.guidelines.sections.map((sec, i) => (
-                            <div key={i} className="flex items-center justify-between text-[11px] bg-palette-cream px-2 py-1 rounded border border-palette-slate/20 font-medium">
-                              <span>Sec {sec.section}: {sec.label}</span>
-                              <span className="font-mono text-[10px] text-palette-slate">
+                            <div key={i} className="flex items-center justify-between text-[11px] bg-white px-2.5 py-1.5 rounded-lg border border-[rgba(46,42,20,0.08)] font-medium">
+                              <span className="text-[#2E2A14]">Sec {sec.section}: {sec.label}</span>
+                              <span className="font-mono text-[10px] text-[#777972]">
                                 {sec.questions} Qs (Att. {sec.attempt}) = {sec.total_marks}m
                               </span>
                             </div>
@@ -781,14 +785,14 @@ export default function App() {
 
                     </div>
                   ) : (
-                    <div className="p-3 bg-palette-cream/40 rounded-xl border border-palette-slate/30 text-xs text-palette-slate">
+                    <div className="p-4 bg-[rgba(46,42,20,0.02)] rounded-xl border border-[rgba(46,42,20,0.1)] text-xs text-[#777972]">
                       Standard 70-Mark University Format active.
                     </div>
                   )}
 
                   {/* Upload Custom Guidelines */}
-                  <div className="pt-2">
-                    <label className="text-[11px] font-medium text-palette-slate hover:text-palette-slate-dark flex items-center gap-1.5 cursor-pointer underline">
+                  <div className="pt-2.5">
+                    <label className="text-[11px] font-medium text-[#777972] hover:text-[#F6440E] flex items-center gap-1.5 cursor-pointer underline transition-colors">
                       <Upload className="w-3.5 h-3.5" />
                       <span>Upload different circular or DOCX template</span>
                       <input 
@@ -812,29 +816,29 @@ export default function App() {
               </div>
 
               {/* Zone 3: Natural Language Director */}
-              <div className="tactile-card bg-palette-cream-card rounded-2xl p-5 flex flex-col justify-between border-1.5 border-palette-slate space-y-4">
+              <div className="tomas-card p-6 flex flex-col justify-between space-y-5">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-palette-coral border border-palette-slate flex items-center justify-center font-bold text-xs">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-[#F6440E] text-white flex items-center justify-center font-mono text-xs font-semibold">
                         3
                       </div>
-                      <h3 className="font-serif font-bold text-base text-palette-slate-dark">
+                      <h3 className="font-semibold text-lg tracking-[-0.02em] text-[#2E2A14]">
                         Specific Instructions
                       </h3>
                     </div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-palette-slate bg-palette-slate-subtle px-1.5 py-0.5 rounded border border-palette-slate/30">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#777972] bg-[rgba(46,42,20,0.06)] px-2 py-0.5 rounded-full border border-[rgba(46,42,20,0.1)]">
                       Optional
                     </span>
                   </div>
 
-                  <p className="text-xs text-palette-slate mb-2">
+                  <p className="text-xs text-[#777972] mb-2.5 leading-relaxed">
                     Direct the model to prioritize specific units, course codes, or focus areas.
                   </p>
 
                   {/* Explicit Scope Filter */}
-                  <div className="flex items-center justify-between text-[11px] mb-2 bg-palette-cream px-2 py-1 rounded-lg border border-palette-slate/30">
-                    <span className="font-semibold text-palette-slate-dark">Target Subject:</span>
+                  <div className="flex items-center justify-between text-[11px] mb-2.5 bg-[#FAF4F0] px-3 py-1.5 rounded-xl border border-[rgba(46,42,20,0.1)]">
+                    <span className="font-semibold text-[#2E2A14]">Target Subject:</span>
                     <select
                       onChange={(e) => {
                         const val = e.target.value;
@@ -844,7 +848,7 @@ export default function App() {
                           setPromptText(`Only generate examination papers for ${val}. Exclude all other notes from this run.`);
                         }
                       }}
-                      className="text-[10px] font-mono bg-white border border-palette-slate/40 rounded px-1.5 py-0.5 max-w-[170px] truncate"
+                      className="text-[10px] font-mono bg-white border border-[rgba(46,42,20,0.15)] rounded-lg px-2 py-0.5 max-w-[170px] truncate text-[#2E2A14] focus:outline-none focus:border-[#2E2A14]"
                     >
                       <option value="ALL">All Selected Notes ({activeNotesCount})</option>
                       {session?.notes?.filter(n => n.selected).map(n => (
@@ -859,13 +863,13 @@ export default function App() {
                     value={promptText}
                     onChange={(e) => setPromptText(e.target.value)}
                     rows={3}
-                    className="w-full text-xs p-2.5 rounded-xl border border-palette-slate bg-palette-cream/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-palette-coral resize-none mb-2"
+                    className="w-full text-xs p-3 rounded-xl border border-[rgba(46,42,20,0.15)] bg-white focus:outline-none focus:border-[#2E2A14] focus:ring-1 focus:ring-[#2E2A14] resize-none mb-2.5 text-[#2E2A14] placeholder-[#777972]/60"
                     placeholder="e.g. Only generate for course code BC101... or Focus questions on Units 1 and 2..."
                   />
 
-                  {/* Explicit Default Prompt Presets */}
-                  <div className="space-y-1 mb-3">
-                    <span className="text-[10px] font-mono text-palette-slate block uppercase">Quick Presets:</span>
+                  {/* Explicit Default Prompt Presets — Tomasfolio Pill Buttons */}
+                  <div className="space-y-1.5 mb-4">
+                    <span className="text-[10px] font-mono text-[#777972] block uppercase tracking-wider">Quick Presets:</span>
                     <div className="flex flex-wrap gap-1.5">
                       <button
                         type="button"
@@ -873,7 +877,7 @@ export default function App() {
                           const firstCode = session?.notes?.find(n => n.selected && n.subject_code)?.subject_code || 'BC101';
                           setPromptText(`Only generate examination papers for course code: ${firstCode}. Ignore all other subjects.`);
                         }}
-                        className="text-[10px] font-medium bg-palette-ice hover:bg-palette-ice-dark px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
+                        className="tomas-pill text-[10px] font-medium px-2.5 py-1 cursor-pointer"
                       >
                         🎯 Only Specific Code
                       </button>
@@ -883,21 +887,21 @@ export default function App() {
                           const firstSubj = session?.notes?.find(n => n.selected)?.subject_name || 'Business Law';
                           setPromptText(`Only prepare Set A and Set B for subject: ${firstSubj}.`);
                         }}
-                        className="text-[10px] font-medium bg-palette-mint hover:bg-palette-mint-dark px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
+                        className="tomas-pill text-[10px] font-medium px-2.5 py-1 cursor-pointer"
                       >
                         🎯 Specific Subject
                       </button>
                       <button
                         type="button"
                         onClick={() => setPromptText('Focus all questions in Section A, B, and C strictly on Units 1 and 2.')}
-                        className="text-[10px] font-medium bg-palette-cream hover:bg-palette-ice px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
+                        className="tomas-pill text-[10px] font-medium px-2.5 py-1 cursor-pointer"
                       >
                         🎯 Units 1 & 2 Only
                       </button>
                       <button
                         type="button"
                         onClick={() => setPromptText('Ensure 75% difference between Set A and Set B. Verify Devanagari Hindi translations.')}
-                        className="text-[10px] font-medium bg-palette-coral-light hover:bg-palette-coral px-2 py-0.5 rounded-full border border-palette-slate/30 cursor-pointer text-palette-slate-dark"
+                        className="tomas-pill text-[10px] font-medium px-2.5 py-1 cursor-pointer"
                       >
                         Strict 75% Difference
                       </button>
@@ -906,14 +910,14 @@ export default function App() {
 
                 </div>
 
-                {/* Primary Action Button */}
+                {/* Primary Action Button — Electric Tomasfolio Accent */}
                 <button
                   onClick={handleGenerate}
                   disabled={generating || activeNotesCount === 0}
-                  className={`tactile-btn w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                  className={`w-full py-3.5 px-4 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     activeNotesCount > 0 
-                      ? 'bg-palette-coral hover:bg-palette-coral-hover text-palette-slate-dark shadow-tactile' 
-                      : 'bg-palette-slate/20 text-palette-slate cursor-not-allowed border-palette-slate/40'
+                      ? 'tomas-btn-primary shadow-sm' 
+                      : 'bg-[rgba(46,42,20,0.08)] text-[#777972] cursor-not-allowed border border-[rgba(46,42,20,0.1)]'
                   }`}
                 >
                   {generating ? (
@@ -938,17 +942,17 @@ export default function App() {
 
             {/* Live Progress Bar (if generating) */}
             {generating && (
-              <div className="tactile-card bg-white rounded-2xl p-4 border-1.5 border-palette-slate space-y-2 animate-fade-in shadow-tactile">
+              <div className="tomas-card p-4 space-y-2.5 animate-fade-in">
                 <div className="flex items-center justify-between text-xs font-semibold">
-                  <span className="flex items-center gap-2 text-palette-slate-dark">
-                    <RotateCw className="w-4 h-4 animate-spin text-palette-coral" />
+                  <span className="flex items-center gap-2 text-[#2E2A14]">
+                    <RotateCw className="w-4 h-4 animate-spin text-[#F6440E]" />
                     {progress.message || 'Processing syllabus & guidelines...'}
                   </span>
-                  <span className="font-mono text-xs">{progress.percent}%</span>
+                  <span className="font-mono text-xs text-[#2E2A14]">{progress.percent}%</span>
                 </div>
-                <div className="w-full bg-palette-slate-subtle rounded-full h-2.5 overflow-hidden border border-palette-slate">
+                <div className="w-full bg-[rgba(46,42,20,0.06)] rounded-full h-2 overflow-hidden border border-[rgba(46,42,20,0.1)]">
                   <div 
-                    className="bg-palette-coral h-full transition-all duration-300"
+                    className="bg-[#F6440E] h-full transition-all duration-300"
                     style={{ width: `${progress.percent}%` }}
                   ></div>
                 </div>
@@ -956,29 +960,29 @@ export default function App() {
             )}
 
             {/* Generated Papers Gallery (Current Active Batch) */}
-            <section className="space-y-4 pt-2">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-palette-slate/20 pb-3">
+            <section className="space-y-5 pt-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[rgba(46,42,20,0.1)] pb-3.5">
                 <div>
-                  <h2 className="font-serif font-bold text-xl text-palette-slate-dark tracking-tight">
+                  <h2 className="font-semibold text-xl sm:text-2xl text-[#2E2A14] tracking-[-0.03em]">
                     Active Examination Papers ({papers.length})
                   </h2>
-                  <p className="text-xs text-palette-slate">
+                  <p className="text-xs text-[#777972] mt-0.5">
                     Strictly 2-page verified documents ready for direct download or targeted editing.
                   </p>
                 </div>
 
                 {/* Filter Pills */}
                 {papers.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <div className="flex items-center bg-palette-cream-card rounded-xl border border-palette-slate p-0.5 shadow-tactile-sm">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="flex items-center bg-[rgba(46,42,20,0.04)] rounded-full border border-[rgba(46,42,20,0.1)] p-0.5">
                       {(['ALL', 'A', 'B'] as const).map(set => (
                         <button
                           key={set}
                           onClick={() => setFilterSet(set)}
-                          className={`text-xs px-2.5 py-1 rounded-lg font-medium transition-all ${
+                          className={`text-xs px-3 py-1 rounded-full font-semibold transition-all cursor-pointer ${
                             filterSet === set 
-                              ? 'bg-palette-slate-dark text-white font-bold' 
-                              : 'text-palette-slate hover:text-palette-slate-dark'
+                              ? 'bg-[#2E2A14] text-white shadow-xs' 
+                              : 'text-[#777972] hover:text-[#2E2A14]'
                           }`}
                         >
                           {set === 'ALL' ? 'All Sets' : `Set ${set}`}
@@ -990,7 +994,7 @@ export default function App() {
                       <select
                         value={selectedSubject}
                         onChange={(e) => setSelectedSubject(e.target.value)}
-                        className="text-xs p-1 rounded-xl border border-palette-slate bg-palette-cream-card font-medium text-palette-slate-dark focus:outline-none shadow-tactile-sm"
+                        className="text-xs py-1 px-3 rounded-full border border-[rgba(46,42,20,0.15)] bg-white font-medium text-[#2E2A14] focus:outline-none focus:border-[#2E2A14]"
                       >
                         <option value="ALL">All Subjects ({uniqueSubjects.length})</option>
                         {uniqueSubjects.map(s => (
@@ -1005,65 +1009,65 @@ export default function App() {
               </div>
 
               {filteredPapers.length === 0 ? (
-                <div className="tactile-card bg-palette-cream-card rounded-2xl p-8 text-center border-1.5 border-palette-slate space-y-2">
-                  <BookOpen className="w-8 h-8 text-palette-slate mx-auto opacity-40" />
-                  <h3 className="font-serif font-bold text-base text-palette-slate-dark">
+                <div className="tomas-card p-12 text-center space-y-2.5">
+                  <BookOpen className="w-8 h-8 text-[#777972] mx-auto opacity-30" />
+                  <h3 className="font-semibold text-base text-[#2E2A14]">
                     {papers.length === 0 ? 'No papers generated in this active session' : 'No papers match your filter'}
                   </h3>
-                  <p className="text-xs text-palette-slate max-w-md mx-auto">
+                  <p className="text-xs text-[#777972] max-w-md mx-auto leading-relaxed">
                     {papers.length === 0 
                       ? 'Upload your notes and click "Create Papers", or click "Load Sample" to see the verified MA Sociology papers.' 
                       : 'Adjust your set or subject filter above to view papers.'}
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {filteredPapers.map(paper => (
                     <div 
                       key={paper.id}
-                      className="tactile-card bg-palette-cream-card rounded-2xl border-1.5 border-palette-slate p-4 flex flex-col justify-between space-y-3 relative overflow-hidden group shadow-tactile"
+                      className="tomas-card p-5 flex flex-col justify-between space-y-4 relative overflow-hidden group"
                     >
                       {/* Top Badges */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-1">
                           <div className="flex items-center gap-1.5">
-                            <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-md border border-palette-slate ${
-                              paper.set_name === 'A' ? 'bg-palette-coral text-palette-slate-dark' : 'bg-palette-ice text-palette-slate-dark'
+                            <span className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full ${
+                              paper.set_name === 'A' ? 'bg-[#2E2A14] text-white' : 'bg-[#F6440E] text-white'
                             }`}>
                               SET {paper.set_name}
                             </span>
-                            <span className="text-xs font-mono font-semibold text-palette-slate bg-palette-slate-subtle px-1.5 py-0.5 rounded border border-palette-slate/30">
+                            <span className="text-xs font-mono font-semibold text-[#777972] bg-[rgba(46,42,20,0.05)] px-2 py-0.5 rounded-full border border-[rgba(46,42,20,0.1)]">
                               {paper.course_code}
                             </span>
                           </div>
-                          <h3 className="font-serif font-bold text-base text-palette-slate-dark leading-snug">
+                          <h3 className="font-semibold text-base text-[#2E2A14] leading-snug pt-0.5">
                             {paper.subject_name}
                           </h3>
-                          <p className="text-[11px] text-palette-slate font-medium">
+                          <p className="text-[11px] text-[#777972] font-medium">
                             {paper.program_name} • Semester {paper.semester}
                           </p>
                         </div>
 
-                        <div className="flex flex-col items-end gap-1">
-                          <span className="text-xs font-mono font-bold bg-palette-mint px-2 py-0.5 rounded-md border border-palette-slate text-palette-slate-dark">
+                        <div className="flex flex-col items-end gap-1.5">
+                          <span className="text-xs font-mono font-bold bg-[#FAF4F0] border border-[rgba(46,42,20,0.15)] px-2.5 py-0.5 rounded-full text-[#2E2A14]">
                             {paper.max_marks} Marks
                           </span>
-                          <span className="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-300 font-semibold flex items-center gap-1">
-                            <Check className="w-3 h-3" /> {paper.page_count} Pages Strict
+                          <span className="text-[10px] font-mono text-[#2E2A14] bg-[#FAF4F0] px-2 py-0.5 rounded-full border border-[rgba(46,42,20,0.12)] font-semibold flex items-center gap-1">
+                            <Check className="w-3 h-3 text-[#F6440E]" /> {paper.page_count} Pages Strict
                           </span>
                         </div>
                       </div>
 
                       {/* Interactive Page Thumbnail Preview */}
-                      <div className="bg-palette-cream/60 rounded-xl p-2.5 border border-palette-slate/30 space-y-1.5">
-                        <div className="flex items-center justify-between text-[11px] text-palette-slate font-medium">
+                      <div className="bg-[#FAF4F0] rounded-xl p-3 border border-[rgba(46,42,20,0.1)] space-y-2">
+                        <div className="flex items-center justify-between text-[11px] text-[#777972] font-medium">
                           <span>Document Preview</span>
-                          <span className="text-emerald-800 font-semibold text-[10px]">
+                          <span className="text-[#2E2A14] font-semibold text-[10px]">
                             Overlap with partner: {paper.overlap_with_partner ? `${paper.overlap_with_partner.toFixed(1)}%` : '≤15%'}
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2 gap-2.5">
                           {[0, 1].map(pageIdx => {
                             const imgUrl = paper.preview_images[pageIdx];
                             return (
@@ -1073,7 +1077,7 @@ export default function App() {
                                   setPreviewPaper(paper);
                                   setActivePreviewPage(pageIdx);
                                 }}
-                                className="aspect-[1/1.41] bg-white rounded-lg border border-palette-slate/40 overflow-hidden relative group/page cursor-pointer shadow-sm hover:shadow transition-all"
+                                className="aspect-[1/1.41] bg-white rounded-lg border border-[rgba(46,42,20,0.15)] overflow-hidden relative group/page cursor-pointer shadow-xs hover:border-[#F6440E] transition-all"
                               >
                                 {imgUrl ? (
                                   <img 
@@ -1083,13 +1087,13 @@ export default function App() {
                                     loading="lazy"
                                   />
                                 ) : (
-                                  <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center bg-palette-cream/20">
-                                    <FileText className="w-5 h-5 text-palette-slate/40 mb-1" />
-                                    <span className="text-[9px] font-mono text-palette-slate/70">Page {pageIdx + 1}</span>
+                                  <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center bg-white">
+                                    <FileText className="w-5 h-5 text-[#777972]/40 mb-1" />
+                                    <span className="text-[9px] font-mono text-[#777972]">Page {pageIdx + 1}</span>
                                   </div>
                                 )}
-                                <div className="absolute inset-0 bg-palette-slate-dark/60 opacity-0 group-hover/page:opacity-100 flex items-center justify-center transition-opacity text-white text-xs font-semibold gap-1">
-                                  <Eye className="w-3.5 h-3.5" />
+                                <div className="absolute inset-0 bg-[#2E2A14]/75 opacity-0 group-hover/page:opacity-100 flex items-center justify-center transition-opacity text-white text-xs font-semibold gap-1">
+                                  <Eye className="w-3.5 h-3.5 text-[#F6440E]" />
                                   <span>View Page {pageIdx + 1}</span>
                                 </div>
                               </div>
@@ -1099,19 +1103,19 @@ export default function App() {
                       </div>
 
                       {/* Paper Actions */}
-                      <div className="flex items-center justify-between gap-2 pt-1 border-t border-palette-slate/20">
+                      <div className="flex items-center justify-between gap-2 pt-1 border-t border-[rgba(46,42,20,0.1)]">
                         <button
                           onClick={() => setInspectPaper(paper)}
-                          className="tactile-btn text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-palette-ice hover:bg-palette-ice-dark text-palette-slate-dark flex items-center gap-1 cursor-pointer"
+                          className="tomas-btn-secondary text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer"
                         >
-                          <Edit3 className="w-3.5 h-3.5" />
+                          <Edit3 className="w-3.5 h-3.5 text-[#F6440E]" />
                           <span>Refine Questions</span>
                         </button>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-2">
                           <a
                             href={paper.docx_url}
-                            className="tactile-btn text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-palette-cream hover:bg-white text-palette-slate-dark border border-palette-slate flex items-center gap-1 cursor-pointer"
+                            className="tomas-btn-secondary text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer"
                             title="Download official Word document"
                           >
                             <Download className="w-3.5 h-3.5" />
@@ -1120,7 +1124,7 @@ export default function App() {
 
                           <a
                             href={paper.pdf_url}
-                            className="tactile-btn text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-palette-mint hover:bg-palette-mint-dark text-palette-slate-dark flex items-center gap-1 cursor-pointer"
+                            className="tomas-btn-primary text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer"
                             title="Download verified 2-page PDF"
                           >
                             <Download className="w-3.5 h-3.5" />
@@ -1141,46 +1145,46 @@ export default function App() {
         {activeTab === 'history' && (
           <div className="space-y-6 pt-2">
             <div>
-              <h2 className="font-serif font-bold text-2xl text-palette-slate-dark tracking-tight">
+              <h2 className="font-semibold text-2xl text-[#2E2A14] tracking-[-0.03em]">
                 Previous Generations Archive
               </h2>
-              <p className="text-xs text-palette-slate">
+              <p className="text-xs text-[#777972] mt-0.5">
                 All generated examination paper batches are stored here. When you start fresh, this archive remains intact.
               </p>
             </div>
 
             {history.length === 0 ? (
-              <div className="tactile-card bg-palette-cream-card rounded-2xl p-12 text-center border-1.5 border-palette-slate space-y-2">
-                <History className="w-8 h-8 text-palette-slate mx-auto opacity-40" />
-                <h3 className="font-serif font-bold text-lg text-palette-slate-dark">No generation batches in archive</h3>
-                <p className="text-xs text-palette-slate">Generate papers or click "Load Sample" to populate the archive.</p>
+              <div className="tomas-card p-14 text-center space-y-2.5">
+                <History className="w-8 h-8 text-[#777972] mx-auto opacity-30" />
+                <h3 className="font-semibold text-lg text-[#2E2A14]">No generation batches in archive</h3>
+                <p className="text-xs text-[#777972]">Generate papers or click "Load Sample" to populate the archive.</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {history.map((batch) => (
                   <div 
                     key={batch.batch_id}
-                    className="tactile-card bg-palette-cream-card rounded-2xl border-1.5 border-palette-slate p-5 space-y-4 shadow-tactile"
+                    className="tomas-card p-6 space-y-5"
                   >
                     {/* Batch Header */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-palette-slate/20">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3.5 border-b border-[rgba(46,42,20,0.1)]">
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-mono font-bold bg-palette-ice text-palette-slate-dark px-2 py-0.5 rounded border border-palette-slate/40">
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <span className="text-xs font-mono font-bold bg-[#FAF4F0] text-[#2E2A14] px-2.5 py-0.5 rounded-full border border-[rgba(46,42,20,0.15)]">
                             {batch.timestamp}
                           </span>
-                          <span className="text-xs font-mono font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-300">
+                          <span className="text-xs font-mono font-semibold text-[#2E2A14] bg-[rgba(46,42,20,0.06)] px-2.5 py-0.5 rounded-full border border-[rgba(46,42,20,0.1)]">
                             {batch.total_papers || batch.papers.length} Papers
                           </span>
                         </div>
-                        <p className="text-xs text-palette-slate font-medium">
+                        <p className="text-xs text-[#777972] font-medium">
                           {batch.instruction}
                         </p>
                       </div>
 
                       <a
                         href="/api/download-all"
-                        className="tactile-btn text-xs font-bold px-3 py-1.5 rounded-xl bg-palette-coral hover:bg-palette-coral-hover text-palette-slate-dark flex items-center gap-1.5 cursor-pointer shrink-0"
+                        className="tomas-btn-primary text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer shrink-0"
                       >
                         <FileArchive className="w-3.5 h-3.5" />
                         <span>Download Batch ZIP</span>
@@ -1188,44 +1192,44 @@ export default function App() {
                     </div>
 
                     {/* Batch Papers Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
                       {batch.papers.map((p) => (
                         <div 
                           key={p.id}
-                          className="bg-palette-cream p-3 rounded-xl border border-palette-slate/30 space-y-2 flex flex-col justify-between"
+                          className="bg-[#FAF4F0] p-3.5 rounded-xl border border-[rgba(46,42,20,0.12)] space-y-2.5 flex flex-col justify-between"
                         >
                           <div>
-                            <div className="flex items-center justify-between text-[11px] font-mono mb-1">
-                              <span className={`px-1.5 py-0.2 rounded font-bold border border-palette-slate ${
-                                p.set_name === 'A' ? 'bg-palette-coral' : 'bg-palette-ice'
+                            <div className="flex items-center justify-between text-[11px] font-mono mb-1.5">
+                              <span className={`px-2 py-0.2 rounded-full font-bold text-white ${
+                                p.set_name === 'A' ? 'bg-[#2E2A14]' : 'bg-[#F6440E]'
                               }`}>
                                 SET {p.set_name}
                               </span>
-                              <span className="text-palette-slate font-semibold">{p.course_code}</span>
+                              <span className="text-[#777972] font-semibold">{p.course_code}</span>
                             </div>
-                            <h4 className="text-xs font-serif font-bold text-palette-slate-dark line-clamp-2 leading-snug">
+                            <h4 className="text-xs font-semibold text-[#2E2A14] line-clamp-2 leading-snug">
                               {p.subject_name}
                             </h4>
-                            <p className="text-[10px] text-palette-slate mt-0.5">
+                            <p className="text-[10px] text-[#777972] mt-0.5">
                               {p.program_name} • Sem {p.semester}
                             </p>
                           </div>
 
-                          <div className="flex items-center justify-between gap-1 pt-2 border-t border-palette-slate/20">
-                            <span className="text-[10px] font-mono text-emerald-800 font-semibold">
+                          <div className="flex items-center justify-between gap-1 pt-2 border-t border-[rgba(46,42,20,0.1)]">
+                            <span className="text-[10px] font-mono text-[#2E2A14] font-semibold">
                               {p.page_count} Pages
                             </span>
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1.5">
                               <a
                                 href={p.docx_url}
-                                className="text-[10px] font-bold px-1.5 py-0.5 bg-white hover:bg-palette-ice rounded border border-palette-slate"
+                                className="text-[10px] font-bold px-2 py-0.5 bg-white hover:bg-[#2E2A14] hover:text-white rounded border border-[rgba(46,42,20,0.15)] text-[#2E2A14] transition-colors"
                                 title="Download DOCX"
                               >
                                 DOCX
                               </a>
                               <a
                                 href={p.pdf_url}
-                                className="text-[10px] font-bold px-1.5 py-0.5 bg-palette-mint hover:bg-palette-mint-dark rounded border border-palette-slate"
+                                className="text-[10px] font-bold px-2 py-0.5 bg-[#2E2A14] text-white hover:bg-[#F6440E] rounded transition-colors"
                                 title="Download PDF"
                               >
                                 PDF
@@ -1247,54 +1251,54 @@ export default function App() {
 
       {/* ================= MODAL: FULLSCREEN DOCUMENT PREVIEW ================= */}
       {previewPaper && (
-        <div className="fixed inset-0 z-50 bg-palette-slate-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-palette-cream-card rounded-2xl border-2 border-palette-slate max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-[#2E2A14]/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#FCF9F5] rounded-2xl border border-[rgba(46,42,20,0.2)] max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-tomas-modal">
             
-            <div className="flex items-center justify-between px-5 py-3 border-b-1.5 border-palette-slate bg-palette-cream">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-palette-coral border border-palette-slate">
+            <div className="flex items-center justify-between px-6 py-3.5 border-b border-[rgba(46,42,20,0.1)] bg-white">
+              <div className="flex items-center gap-2.5">
+                <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#2E2A14] text-white">
                   SET {previewPaper.set_name}
                 </span>
-                <span className="font-serif font-bold text-sm text-palette-slate-dark">
+                <span className="font-semibold text-sm text-[#2E2A14]">
                   {previewPaper.subject_name} ({previewPaper.course_code})
                 </span>
-                <span className="text-xs font-mono text-emerald-700 font-semibold hidden sm:inline">
+                <span className="text-xs font-mono text-[#777972] font-semibold hidden sm:inline">
                   • {previewPaper.page_count} Pages Verified
                 </span>
               </div>
               <button
                 onClick={() => setPreviewPaper(null)}
-                className="p-1 rounded-lg hover:bg-palette-slate/10 text-palette-slate cursor-pointer"
+                className="p-1 rounded-lg hover:bg-[rgba(46,42,20,0.06)] text-[#777972] hover:text-[#2E2A14] cursor-pointer transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col items-center bg-palette-slate-subtle/30">
+            <div className="flex-1 overflow-y-auto p-5 flex flex-col items-center bg-[#FAF4F0]">
               {previewPaper.preview_images[activePreviewPage] ? (
                 <img 
                   src={previewPaper.preview_images[activePreviewPage]} 
                   alt={`Page ${activePreviewPage + 1}`}
-                  className="max-w-2xl w-full bg-white shadow-xl rounded border border-palette-slate/40"
+                  className="max-w-2xl w-full bg-white shadow-xl rounded-lg border border-[rgba(46,42,20,0.15)]"
                 />
               ) : (
-                <div className="p-12 text-center text-sm text-palette-slate">
+                <div className="p-12 text-center text-sm text-[#777972]">
                   Preview render not generated yet. Download DOCX/PDF to view.
                 </div>
               )}
             </div>
 
             {/* Modal Footer with Page Switcher */}
-            <div className="flex items-center justify-between px-5 py-3 border-t-1.5 border-palette-slate bg-palette-cream">
-              <div className="flex items-center gap-1">
+            <div className="flex items-center justify-between px-6 py-3.5 border-t border-[rgba(46,42,20,0.1)] bg-white">
+              <div className="flex items-center gap-1.5">
                 {[0, 1].map(idx => (
                   <button
                     key={idx}
                     onClick={() => setActivePreviewPage(idx)}
-                    className={`text-xs px-3 py-1 rounded-lg font-mono font-bold transition-all ${
+                    className={`text-xs px-3.5 py-1 rounded-full font-mono font-bold transition-all cursor-pointer ${
                       activePreviewPage === idx 
-                        ? 'bg-palette-slate-dark text-white' 
-                        : 'bg-palette-cream border border-palette-slate text-palette-slate'
+                        ? 'bg-[#2E2A14] text-white' 
+                        : 'bg-[#FAF4F0] border border-[rgba(46,42,20,0.14)] text-[#777972] hover:text-[#2E2A14]'
                     }`}
                   >
                     Page {idx + 1}
@@ -1305,14 +1309,14 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <a
                   href={previewPaper.docx_url}
-                  className="tactile-btn text-xs font-semibold px-3 py-1.5 rounded-xl bg-palette-cream hover:bg-white text-palette-slate-dark border border-palette-slate flex items-center gap-1"
+                  className="tomas-btn-secondary text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Download DOCX</span>
                 </a>
                 <a
                   href={previewPaper.pdf_url}
-                  className="tactile-btn text-xs font-semibold px-3 py-1.5 rounded-xl bg-palette-mint hover:bg-palette-mint-dark text-palette-slate-dark flex items-center gap-1"
+                  className="tomas-btn-primary text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Download PDF</span>
@@ -1326,13 +1330,13 @@ export default function App() {
 
       {/* ================= DRAWER: TARGETED QUESTION EDITOR ================= */}
       {inspectPaper && (
-        <div className="fixed inset-0 z-50 bg-palette-slate-dark/60 backdrop-blur-xs flex justify-end">
-          <div className="w-full max-w-xl bg-palette-cream-card h-full border-l-2 border-palette-slate flex flex-col shadow-2xl animate-slide-left">
+        <div className="fixed inset-0 z-50 bg-[#2E2A14]/60 backdrop-blur-xs flex justify-end">
+          <div className="w-full max-w-xl bg-white h-full border-l border-[rgba(46,42,20,0.2)] flex flex-col shadow-2xl animate-slide-left">
             
-            <div className="flex items-center justify-between px-5 py-3.5 border-b-1.5 border-palette-slate bg-palette-cream">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(46,42,20,0.1)] bg-[#FCF9F5]">
               <div>
-                <span className="text-[10px] font-mono uppercase text-palette-slate block">Question Studio</span>
-                <h3 className="font-serif font-bold text-base text-palette-slate-dark">
+                <span className="text-[10px] font-mono uppercase text-[#777972] block tracking-wider">Question Studio</span>
+                <h3 className="font-semibold text-base text-[#2E2A14]">
                   {inspectPaper.subject_name} (Set {inspectPaper.set_name})
                 </h3>
               </div>
@@ -1341,13 +1345,13 @@ export default function App() {
                   setInspectPaper(null);
                   setEditingQuestion(null);
                 }}
-                className="p-1 rounded-lg hover:bg-palette-slate/10 text-palette-slate cursor-pointer"
+                className="p-1 rounded-lg hover:bg-[rgba(46,42,20,0.06)] text-[#777972] hover:text-[#2E2A14] cursor-pointer transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-5">
               
               {/* Question list for targeted refinement */}
               {['section_a', 'section_b', 'section_c'].map(secKey => {
@@ -1355,8 +1359,8 @@ export default function App() {
                 const secTitle = secKey === 'section_a' ? 'Section A (2 Marks)' : secKey === 'section_b' ? 'Section B (6/7 Marks)' : 'Section C (20 Marks)';
                 
                 return (
-                  <div key={secKey} className="space-y-2">
-                    <h4 className="text-xs font-mono font-bold text-palette-slate uppercase tracking-wider">
+                  <div key={secKey} className="space-y-2.5">
+                    <h4 className="text-xs font-mono font-bold text-[#777972] uppercase tracking-wider">
                       {secTitle}
                     </h4>
 
@@ -1370,26 +1374,26 @@ export default function App() {
                             setManualHi(q.hi || '');
                             setEditInstruction('');
                           }}
-                          className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                          className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
                             editingQuestion?.id === q.id 
-                              ? 'bg-palette-mint-light/60 border-palette-mint-dark shadow-tactile-sm' 
-                              : 'bg-palette-cream/40 border-palette-slate/30 hover:bg-white hover:border-palette-slate'
+                              ? 'bg-[#FAF4F0] border-[#F6440E] shadow-sm' 
+                              : 'bg-white border-[rgba(46,42,20,0.1)] hover:border-[rgba(46,42,20,0.25)]'
                           }`}
                         >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-mono font-bold text-palette-slate-dark">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-xs font-mono font-bold text-[#2E2A14]">
                               Q{q.number}. [{q.marks} Marks]
                             </span>
-                            <span className="text-[10px] text-palette-slate flex items-center gap-1">
-                              <Edit3 className="w-3 h-3" /> Click to refine
+                            <span className="text-[10px] text-[#777972] flex items-center gap-1">
+                              <Edit3 className="w-3 h-3 text-[#F6440E]" /> Click to refine
                             </span>
                           </div>
 
-                          <p className="text-xs text-palette-slate-dark font-medium leading-relaxed mb-1">
+                          <p className="text-xs text-[#2E2A14] font-medium leading-relaxed mb-1">
                             {q.en}
                           </p>
                           {q.hi && (
-                            <p className="text-xs text-palette-slate font-serif leading-relaxed">
+                            <p className="text-xs text-[#777972] leading-relaxed">
                               {q.hi}
                             </p>
                           )}
@@ -1404,12 +1408,12 @@ export default function App() {
 
             {/* Targeted Edit Form when a question is selected */}
             {editingQuestion && (
-              <div className="p-4 border-t-1.5 border-palette-slate bg-palette-cream space-y-3">
-                <div className="flex items-center justify-between text-xs font-bold text-palette-slate-dark">
+              <div className="p-5 border-t border-[rgba(46,42,20,0.1)] bg-[#FCF9F5] space-y-3.5">
+                <div className="flex items-center justify-between text-xs font-bold text-[#2E2A14]">
                   <span>Refining Question {editingQuestion.number} ({editingQuestion.marks} Marks)</span>
                   <button 
                     onClick={() => setEditingQuestion(null)}
-                    className="text-palette-slate hover:text-palette-slate-dark text-[11px] underline"
+                    className="text-[#777972] hover:text-[#2E2A14] text-[11px] underline cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -1417,7 +1421,7 @@ export default function App() {
 
                 {/* Natural language instruction input */}
                 <div>
-                  <label className="text-[11px] font-medium text-palette-slate block mb-1">
+                  <label className="text-[11px] font-medium text-[#777972] block mb-1">
                     Direct AI instruction for this question:
                   </label>
                   <input
@@ -1425,18 +1429,18 @@ export default function App() {
                     value={editInstruction}
                     onChange={(e) => setEditInstruction(e.target.value)}
                     placeholder="e.g. Make more analytical, or replace with Parsons question..."
-                    className="w-full text-xs p-2.5 rounded-xl border border-palette-slate bg-white focus:outline-none focus:ring-2 focus:ring-palette-coral"
+                    className="w-full text-xs p-3 rounded-xl border border-[rgba(46,42,20,0.18)] bg-white focus:outline-none focus:border-[#2E2A14] text-[#2E2A14]"
                   />
                 </div>
 
                 {/* Quick directives */}
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1.5">
                   {['Make more analytical', 'Focus on Indian context', 'Improve Hindi translation', 'Make slightly harder'].map((dir, i) => (
                     <button
                       key={i}
                       type="button"
                       onClick={() => setEditInstruction(dir)}
-                      className="text-[10px] bg-palette-cream-card hover:bg-palette-ice px-2 py-0.5 rounded border border-palette-slate/40 text-palette-slate-dark font-medium cursor-pointer"
+                      className="tomas-pill text-[10px] px-2.5 py-1 text-[#2E2A14] font-medium cursor-pointer"
                     >
                       {dir}
                     </button>
@@ -1446,7 +1450,7 @@ export default function App() {
                 <button
                   onClick={handleEditQuestion}
                   disabled={editingLoading}
-                  className="tactile-btn w-full py-2 rounded-xl bg-palette-coral hover:bg-palette-coral-hover text-palette-slate-dark font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="tomas-btn-primary w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {editingLoading ? (
                     <>

@@ -20,62 +20,94 @@
   }
 
   body {
-    background-color: #FAF3DD;
-    color: #343841;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: #FCF9F5;
+    color: #2E2A14;
+    font-family: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: rgba(246, 68, 14, 0.2);
+    color: #2E2A14;
   }
 }
 
-/* Tactile neo-brutalist interaction classes */
-.tactile-btn {
-  border: 1.5px solid #5E6472;
-  box-shadow: 0 3px 0 0 #5E6472;
-  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.tactile-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 0 0 #5E6472;
-}
-
-.tactile-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 0 #5E6472;
-}
-
-.tactile-card {
-  border: 1.5px solid #5E6472;
-  box-shadow: 0 4px 0 0 #5E6472;
+/* Tomasfolio Editorial Design System Components */
+.tomas-card {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(46, 42, 20, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(46, 42, 20, 0.03);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tactile-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 0 #5E6472;
+.tomas-card:hover {
+  border-color: rgba(46, 42, 20, 0.24);
+  box-shadow: 0 8px 24px -4px rgba(46, 42, 20, 0.06);
 }
 
-/* Subtle dot grid pattern */
-.bg-dot-pattern {
-  background-image: radial-gradient(rgba(94, 100, 114, 0.18) 1px, transparent 1px);
-  background-size: 24px 24px;
+.tomas-pill {
+  border-radius: 9999px;
+  border: 1px solid rgba(46, 42, 20, 0.14);
+  background-color: rgba(46, 42, 20, 0.03);
+  color: #2E2A14;
+  transition: all 0.15s ease;
 }
 
-/* Custom thin scrollbar */
+.tomas-pill:hover {
+  background-color: rgba(46, 42, 20, 0.06);
+  border-color: rgba(46, 42, 20, 0.28);
+}
+
+.tomas-btn-primary {
+  background-color: #F6440E;
+  color: #FFFFFF;
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tomas-btn-primary:hover:not(:disabled) {
+  background-color: #2E2A14;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.tomas-btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.tomas-btn-secondary {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(46, 42, 20, 0.18);
+  color: #2E2A14;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.tomas-btn-secondary:hover:not(:disabled) {
+  background-color: rgba(46, 42, 20, 0.04);
+  border-color: rgba(46, 42, 20, 0.35);
+  color: #2E2A14;
+}
+
+/* Custom Tomasfolio Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF3DD;
+  background: #FCF9F5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #AED9E0;
+  background: rgba(46, 42, 20, 0.18);
   border-radius: 9999px;
-  border: 1px solid #5E6472;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FFA69E;
+  background: #F6440E;
 }

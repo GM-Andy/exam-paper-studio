@@ -7,37 +7,40 @@ export default {
   theme: {
     extend: {
       colors: {
-        palette: {
-          coral: '#FFA69E',
-          'coral-hover': '#F09289',
-          'coral-light': '#FFF1EF',
-          cream: '#FAF3DD',
-          'cream-card': '#FFFDF7',
-          'cream-dark': '#EFE5C7',
-          mint: '#B8F2E6',
-          'mint-dark': '#83D9C7',
-          'mint-light': '#E9FCF8',
-          ice: '#AED9E0',
-          'ice-dark': '#8BC4CE',
-          'ice-light': '#F0F8FA',
-          slate: '#5E6472',
-          'slate-dark': '#343841',
-          'slate-light': '#7E8696',
-          'slate-subtle': '#E5E8EE',
+        tomas: {
+          bg: '#FCF9F5',          // Grey BG (light)
+          'bg-dark': '#FAF4F0',   // Grey BG (warm tint)
+          black: '#2E2A14',       // Olive-dark primary text
+          'black-dark': '#2D301E',// Dark surface
+          grey: '#777972',        // Grey text
+          'grey-dark': '#63694B',
+          white: '#FFFFFF',       // Clean card surface
+          accent: '#F6440E',      // Vivid orange accent
+          'accent-hover': '#DF3B09',
+          'accent-tint': 'rgba(246, 68, 14, 0.08)',
+          'accent-soft': 'rgba(255, 173, 148, 0.3)',
+          border: 'rgba(46, 42, 20, 0.12)',
+          'border-strong': 'rgba(46, 42, 20, 0.22)',
+          'border-dark': 'rgba(45, 48, 30, 0.2)',
+          surface: '#FFFFFF',
+          rail: '#F4ECE4',
         }
       },
       fontFamily: {
-        serif: ['Newsreader', 'Fraunces', 'Georgia', 'serif'],
-        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+        sans: ['"General Sans"', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+      },
+      letterSpacing: {
+        tighter: '-0.04em',
+        tight: '-0.03em',
+        snug: '-0.015em',
+        wide: '0.02em',
+        wider: '0.04em',
       },
       boxShadow: {
-        'tactile': '0 3px 0 0 #5E6472',
-        'tactile-sm': '0 2px 0 0 #5E6472',
-        'tactile-lg': '0 5px 0 0 #5E6472',
-        'subtle-float': '0 12px 32px -8px rgba(94, 100, 114, 0.12)',
-        'glow-coral': '0 0 25px -4px rgba(255, 166, 158, 0.5)',
-        'glow-mint': '0 0 25px -4px rgba(184, 242, 230, 0.5)',
+        'tomas-card': '0 1px 3px 0 rgba(46, 42, 20, 0.04), 0 1px 2px -1px rgba(46, 42, 20, 0.03)',
+        'tomas-hover': '0 8px 24px -4px rgba(46, 42, 20, 0.08), 0 2px 6px -1px rgba(46, 42, 20, 0.04)',
+        'tomas-modal': '0 25px 50px -12px rgba(46, 42, 20, 0.25)',
       }
     },
   },
