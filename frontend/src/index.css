@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    background-color: #FAF3DD;
+    color: #343841;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+}
+
+/* Tactile neo-brutalist interaction classes */
+.tactile-btn {
+  border: 1.5px solid #5E6472;
+  box-shadow: 0 3px 0 0 #5E6472;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tactile-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 0 #5E6472;
+}
+
+.tactile-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 0 #5E6472;
+}
+
+.tactile-card {
+  border: 1.5px solid #5E6472;
+  box-shadow: 0 4px 0 0 #5E6472;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tactile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 0 #5E6472;
+}
+
+/* Subtle dot grid pattern */
+.bg-dot-pattern {
+  background-image: radial-gradient(rgba(94, 100, 114, 0.18) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Custom thin scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF3DD;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #AED9E0;
+  border-radius: 9999px;
+  border: 1px solid #5E6472;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFA69E;
+}
