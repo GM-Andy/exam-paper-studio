@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { 
   FileText, Upload, Download, Eye, Sparkles, 
-  RotateCw, Edit3, BookOpen, FileArchive, X,
+  RotateCw, Edit3, FileArchive, X,
   Check, Zap, Trash2, CheckSquare, 
-  Square, History, Layers
+  Square, History, Layers, ArrowLeft, ArrowRight
 } from 'lucide-react';
 import Lenis from 'lenis';
 import confetti from 'canvas-confetti';
@@ -406,13 +406,15 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#FCF9F5] text-[#2E2A14] flex flex-col font-sans selection:bg-[#F6440E]/20 selection:text-[#2E2A14]">
       
-      {/* 1. Header Navigation Dock — Framer Tomasfolio Style */}
+      {/* 1. Header Navigation Dock — Framer Editorial Style */}
       <header className="sticky top-0 z-40 bg-[#FCF9F5]/90 backdrop-blur-md border-b border-[rgba(46,42,20,0.1)] px-4 lg:px-8 py-3.5 transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#2E2A14] flex items-center justify-center text-white shadow-sm">
-              <BookOpen className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-3.5">
+            {/* Custom Monogram Asset */}
+            <div className="w-9 h-9 rounded-xl bg-[#2E2A14] flex items-center justify-center text-white shadow-xs font-mono font-bold text-xs tracking-wider">
+              <span className="text-white">EP</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F6440E] -ml-0.5 mt-2"></span>
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -438,7 +440,7 @@ export default function App() {
                 onClick={() => setActiveTab('studio')}
                 className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all cursor-pointer ${
                   activeTab === 'studio' 
-                    ? 'bg-[#2E2A14] text-white shadow-sm' 
+                    ? 'bg-[#2E2A14] text-white shadow-xs' 
                     : 'text-[#777972] hover:text-[#2E2A14]'
                 }`}
               >
@@ -457,7 +459,7 @@ export default function App() {
                 onClick={() => setActiveTab('history')}
                 className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all cursor-pointer ${
                   activeTab === 'history' 
-                    ? 'bg-[#2E2A14] text-white shadow-sm' 
+                    ? 'bg-[#2E2A14] text-white shadow-xs' 
                     : 'text-[#777972] hover:text-[#2E2A14]'
                 }`}
               >
@@ -513,40 +515,66 @@ export default function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-12">
 
         {/* ================= TAB 1: ACTIVE STUDIO ================= */}
         {activeTab === 'studio' && (
           <>
-            {/* Minimal Punchy Hero — Editorial Two-Tone Statement */}
-            <div className="text-center max-w-3xl mx-auto space-y-3 pt-2 pb-2">
-              <h1 className="text-3xl sm:text-5xl font-semibold text-[#2E2A14] tracking-[-0.035em] leading-[1.05]">
-                Your exam papers, <span className="text-[#F6440E]">ready in minutes.</span>
-              </h1>
-              <p className="text-xs sm:text-sm text-[#777972] max-w-xl mx-auto leading-relaxed">
-                Upload notes and guidelines. Select which files to include. Generate official Word & PDF papers with strict 2-page verification.
-              </p>
+            {/* Minimal Punchy Hero — Editorial Two-Tone Statement with Layered Watermark */}
+            <div className="relative text-center max-w-3xl mx-auto pt-6 pb-2 overflow-hidden">
+              {/* Giant Background Watermark Typography (as in Image 1) */}
+              <div 
+                aria-hidden="true" 
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none opacity-[0.035] text-[130px] sm:text-[190px] font-bold text-[#2E2A14] tracking-tighter whitespace-nowrap z-0 uppercase"
+              >
+                EXAM STUDIO
+              </div>
+
+              <div className="relative z-10 space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(46,42,20,0.04)] border border-[rgba(46,42,20,0.1)] text-xs text-[#777972]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#F6440E]"></span>
+                  <span>Academic Document Studio • Built for Professors</span>
+                </div>
+                <h1 className="text-3xl sm:text-5xl font-semibold text-[#2E2A14] tracking-[-0.035em] leading-[1.05]">
+                  Your exam papers, <span className="text-[#F6440E]">ready in minutes.</span>
+                </h1>
+                <p className="text-xs sm:text-sm text-[#777972] max-w-xl mx-auto leading-relaxed">
+                  Upload notes and guidelines. Select which files to include. Generate official Word & PDF papers with strict 2-page verification.
+                </p>
+              </div>
             </div>
 
-            {/* 3-Zone Bento Grid — Tomasfolio Refined Cards */}
+            {/* 3-Zone Bento Grid — Tactile 3D Clay Assets (from Image 4) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               {/* Zone 1: Active Notes & Selection */}
               <div className="tomas-card p-6 flex flex-col justify-between space-y-5">
                 <div>
-                  <div className="flex items-center justify-between mb-2.5">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-[#2E2A14] text-white flex items-center justify-center font-mono text-xs font-semibold">
-                        1
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      {/* High-Craft Clay Syllabus Asset */}
+                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.12)] bg-[#FAF4F0] shrink-0 shadow-xs">
+                        <img 
+                          src="/assets/clay-syllabus.jpg" 
+                          alt="Syllabus stack" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <h3 className="font-semibold text-lg tracking-[-0.02em] text-[#2E2A14]">
-                        Notes & Syllabus
-                      </h3>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[11px] font-bold text-[#777972]">ZONE 01</span>
+                          <span className="w-1 h-1 rounded-full bg-[rgba(46,42,20,0.3)]"></span>
+                          <span className="text-[10px] font-mono text-[#777972] uppercase">Input</span>
+                        </div>
+                        <h3 className="font-semibold text-base text-[#2E2A14] tracking-[-0.02em]">
+                          Notes & Syllabus
+                        </h3>
+                      </div>
                     </div>
 
                     {/* Selection Controls */}
                     {totalNotesCount > 0 && (
-                      <div className="flex items-center gap-2 text-[11px]">
+                      <div className="flex items-center gap-1.5 text-[11px] pt-1">
                         <button
                           onClick={() => handleSelectAllNotes(true)}
                           className="text-[#777972] hover:text-[#2E2A14] font-medium transition-colors cursor-pointer"
@@ -715,15 +743,28 @@ export default function App() {
               {/* Zone 2: Active Exam Guidelines */}
               <div className="tomas-card p-6 flex flex-col justify-between space-y-5">
                 <div>
-                  <div className="flex items-center justify-between mb-2.5">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-[#2E2A14] text-white flex items-center justify-center font-mono text-xs font-semibold">
-                        2
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      {/* High-Craft Clay University Seal Asset */}
+                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.12)] bg-[#FAF4F0] shrink-0 shadow-xs">
+                        <img 
+                          src="/assets/clay-seal.jpg" 
+                          alt="University Seal" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <h3 className="font-semibold text-lg tracking-[-0.02em] text-[#2E2A14]">
-                        Exam Guidelines in Use
-                      </h3>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[11px] font-bold text-[#777972]">ZONE 02</span>
+                          <span className="w-1 h-1 rounded-full bg-[rgba(46,42,20,0.3)]"></span>
+                          <span className="text-[10px] font-mono text-[#777972] uppercase">Rules</span>
+                        </div>
+                        <h3 className="font-semibold text-base text-[#2E2A14] tracking-[-0.02em]">
+                          Exam Guidelines in Use
+                        </h3>
+                      </div>
                     </div>
+
                     <span className="text-[10px] font-mono uppercase tracking-wider text-[#777972] bg-[rgba(46,42,20,0.06)] px-2 py-0.5 rounded-full border border-[rgba(46,42,20,0.1)]">
                       Active Rules
                     </span>
@@ -733,7 +774,7 @@ export default function App() {
                     University marking format, bilingual translation, and Word template specifications.
                   </p>
 
-                  {/* Prominent Guidelines Summary Card */}
+                  {/* Prominent Guidelines Summary Card — De-slopped & Flat */}
                   {session?.guidelines ? (
                     <div className="bg-[#FAF4F0]/80 rounded-xl p-4 border border-[rgba(46,42,20,0.14)] space-y-3">
                       
@@ -766,7 +807,7 @@ export default function App() {
                         </div>
                       </div>
 
-                      {/* Section Structure Chips */}
+                      {/* Section Structure Rows — Hairline Dividers */}
                       <div className="space-y-1.5 pt-1">
                         <span className="text-[10px] font-mono text-[#777972] uppercase tracking-wider block">
                           Sections Breakdown
@@ -818,15 +859,28 @@ export default function App() {
               {/* Zone 3: Natural Language Director */}
               <div className="tomas-card p-6 flex flex-col justify-between space-y-5">
                 <div>
-                  <div className="flex items-center justify-between mb-2.5">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-[#F6440E] text-white flex items-center justify-center font-mono text-xs font-semibold">
-                        3
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      {/* High-Craft Clay Drafting Pen Asset */}
+                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.12)] bg-[#FAF4F0] shrink-0 shadow-xs">
+                        <img 
+                          src="/assets/clay-pen.jpg" 
+                          alt="Drafting Pen" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <h3 className="font-semibold text-lg tracking-[-0.02em] text-[#2E2A14]">
-                        Specific Instructions
-                      </h3>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[11px] font-bold text-[#F6440E]">ZONE 03</span>
+                          <span className="w-1 h-1 rounded-full bg-[rgba(46,42,20,0.3)]"></span>
+                          <span className="text-[10px] font-mono text-[#777972] uppercase">Direct</span>
+                        </div>
+                        <h3 className="font-semibold text-base text-[#2E2A14] tracking-[-0.02em]">
+                          Specific Instructions
+                        </h3>
+                      </div>
                     </div>
+
                     <span className="text-[10px] font-mono uppercase tracking-wider text-[#777972] bg-[rgba(46,42,20,0.06)] px-2 py-0.5 rounded-full border border-[rgba(46,42,20,0.1)]">
                       Optional
                     </span>
@@ -960,7 +1014,7 @@ export default function App() {
             )}
 
             {/* Generated Papers Gallery (Current Active Batch) */}
-            <section className="space-y-5 pt-2">
+            <section className="space-y-5 pt-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[rgba(46,42,20,0.1)] pb-3.5">
                 <div>
                   <h2 className="font-semibold text-xl sm:text-2xl text-[#2E2A14] tracking-[-0.03em]">
@@ -1010,7 +1064,9 @@ export default function App() {
 
               {filteredPapers.length === 0 ? (
                 <div className="tomas-card p-12 text-center space-y-2.5">
-                  <BookOpen className="w-8 h-8 text-[#777972] mx-auto opacity-30" />
+                  <div className="w-12 h-12 rounded-xl bg-[#FAF4F0] border border-[rgba(46,42,20,0.1)] flex items-center justify-center mx-auto text-[#777972]">
+                    <FileText className="w-6 h-6 text-[#777972]/60" />
+                  </div>
                   <h3 className="font-semibold text-base text-[#2E2A14]">
                     {papers.length === 0 ? 'No papers generated in this active session' : 'No papers match your filter'}
                   </h3>
@@ -1138,6 +1194,56 @@ export default function App() {
                 </div>
               )}
             </section>
+
+            {/* Editorial Professor Quality Section (Inspired by Image 3) */}
+            <section className="tomas-card overflow-hidden grid grid-cols-1 md:grid-cols-12 items-stretch mt-8">
+              <div className="md:col-span-8 p-8 sm:p-10 flex flex-col justify-between space-y-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="font-mono text-xs uppercase tracking-wider text-[#777972]">Academic Guarantee</span>
+                    <span className="w-1 h-1 rounded-full bg-[#F6440E]"></span>
+                    <span className="font-mono text-xs text-[#2E2A14] font-semibold">Strict 2-Page Constraint</span>
+                  </div>
+                  <blockquote className="text-xl sm:text-2xl font-semibold text-[#2E2A14] tracking-[-0.03em] leading-snug">
+                    "Preparing examination papers used to require hours of manual Word formatting, checking Hindi translations, and re-counting marks. With Exam Paper Studio, Set A and Set B are ready in minutes, verified against the university template."
+                  </blockquote>
+                </div>
+                
+                <div className="flex items-center justify-between pt-4 border-t border-[rgba(46,42,20,0.1)]">
+                  <div>
+                    <span className="font-semibold text-sm text-[#2E2A14] block">Dr. Archana Sharma</span>
+                    <span className="text-xs text-[#777972]">Department of Sociology • Academic Examination Board</span>
+                  </div>
+                  
+                  {/* Square Orange Navigation Controls (as in Image 3) */}
+                  <div className="flex items-center gap-1">
+                    <button 
+                      onClick={() => setActiveTab('studio')} 
+                      className="w-8 h-8 bg-[#F6440E] hover:bg-[#2E2A14] text-white flex items-center justify-center transition-colors cursor-pointer"
+                      title="Active Studio"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => setActiveTab('history')} 
+                      className="w-8 h-8 bg-[#F6440E] hover:bg-[#2E2A14] text-white flex items-center justify-center transition-colors cursor-pointer"
+                      title="Previous Generations"
+                    >
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Black & White High-Fashion Editorial Academic Portrait (as in Image 3) */}
+              <div className="md:col-span-4 bg-[#FAF4F0] min-h-[260px] overflow-hidden border-t md:border-t-0 md:border-l border-[rgba(46,42,20,0.12)]">
+                <img 
+                  src="/assets/academic-portrait.jpg" 
+                  alt="Academic Curator" 
+                  className="w-full h-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-700"
+                />
+              </div>
+            </section>
           </>
         )}
 
@@ -1248,6 +1354,81 @@ export default function App() {
         )}
 
       </main>
+
+      {/* 4. Full-Width Electric Orange Footer — Inspired by Image 4 */}
+      <footer className="mt-16 bg-[#F6440E] text-white relative overflow-hidden">
+        {/* Pixel Dither / Grid Texture in Top Left (from Image 4) */}
+        <div 
+          aria-hidden="true" 
+          className="absolute top-0 left-0 w-64 h-32 opacity-15 pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(#ffffff 2px, transparent 2px)`,
+            backgroundSize: '8px 8px'
+          }}
+        ></div>
+
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16 sm:py-20 relative z-10 space-y-12">
+          
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+            <div>
+              <span className="text-xs font-mono uppercase tracking-widest text-white/70 block mb-2">
+                Academic Document Automation Engine
+              </span>
+              <a 
+                href="mailto:contact@exampaper.studio"
+                className="text-4xl sm:text-6xl font-bold tracking-[-0.04em] text-white hover:opacity-90 transition-opacity block"
+              >
+                contact@exampaper.studio
+              </a>
+            </div>
+
+            {/* Rotated Vertical Badge (as in Image 4) */}
+            <div className="hidden lg:flex items-center gap-2 text-white/80 font-mono text-xs uppercase tracking-widest">
+              <span className="w-2 h-2 rounded-full bg-white"></span>
+              <span>© Exam Paper Studio • 2026</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-8 border-t border-white/20 text-xs">
+            <div>
+              <span className="font-mono uppercase text-white/60 block mb-3 text-[11px]">System</span>
+              <ul className="space-y-2 font-medium">
+                <li><button onClick={() => setActiveTab('studio')} className="hover:underline cursor-pointer">Active Studio</button></li>
+                <li><button onClick={() => setActiveTab('history')} className="hover:underline cursor-pointer">Previous Generations</button></li>
+                <li><button onClick={handleLoadSample} className="hover:underline cursor-pointer">Load Sample Data</button></li>
+              </ul>
+            </div>
+
+            <div>
+              <span className="font-mono uppercase text-white/60 block mb-3 text-[11px]">University Formats</span>
+              <ul className="space-y-2 font-medium">
+                <li><span>70 Marks Format (MA/BA)</span></li>
+                <li><span>75 Marks Format</span></li>
+                <li><span>Bilingual Devanagari Hindi</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <span className="font-mono uppercase text-white/60 block mb-3 text-[11px]">Compliance</span>
+              <ul className="space-y-2 font-medium">
+                <li><span>Strictly ≤2 Pages PDF</span></li>
+                <li><span>≥75% Difference A & B</span></li>
+                <li><span>Word (.docx) Template Exact</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <span className="font-mono uppercase text-white/60 block mb-3 text-[11px]">Actions</span>
+              <ul className="space-y-2 font-medium">
+                <li><a href="/api/download-all" className="hover:underline">Download All (ZIP)</a></li>
+                <li><button onClick={handleResetWorkspace} className="hover:underline cursor-pointer">Reset Workspace</button></li>
+                <li><a href="https://github.com/GM-Andy/exam-paper-studio" target="_blank" rel="noreferrer" className="hover:underline">GitHub Repository</a></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </footer>
 
       {/* ================= MODAL: FULLSCREEN DOCUMENT PREVIEW ================= */}
       {previewPaper && (
