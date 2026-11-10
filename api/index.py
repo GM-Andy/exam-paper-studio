@@ -1,4 +1,5 @@
 import sys
+import urllib.parse
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent / "backend"
@@ -12,31 +13,28 @@ class VercelPathRewriteMiddleware:
 
     async def __call__(self, scope, receive, send):
         if scope["type"] == "http":
-            headers = dict(scope.get("headers", []))
-            header_dict = {}
-            for k, v in headers.items():
-                k_str = k.decode("latin1").lower() if isinstance(k, bytes) else str(k).lower()
-                v_str = v.decode("latin1") if isinstance(v, bytes) else str(v)
-                header_dict[k_str] = v_str
-
-            matched_path = header_dict.get("x-matched-path", "")
             current_path = scope.get("path", "")
+            query_bytes = scope.get("query_string", b"")
+            query_str = query_bytes.decode("latin1")
             
-            print(f"[VERCEL ASGI] current_path='{current_path}', x-matched-path='{matched_path}'")
-
-            # If current_path is the serverless rewrite destination, recover original request path
-            if matched_path and current_path in ["/api/index.py", "/api", "/api/"]:
-                clean_path = matched_path.split("?")[0]
-                scope["path"] = clean_path
-                scope["raw_path"] = clean_path.encode("latin1")
-                print(f"[VERCEL ASGI] Rewrote path to: '{clean_path}'")
-            elif current_path.startswith("/api/index.py"):
-                clean_path = current_path.replace("/api/index.py", "")
-                if not clean_path.startswith("/"):
-                    clean_path = "/" + clean_path
-                scope["path"] = clean_path
-                scope["raw_path"] = clean_path.encode("latin1")
-                print(f"[VERCEL ASGI] Stripped index.py to: '{clean_path}'")
+            # 1. Check for __path parameter passed from vercel.json rewrite
+            params = urllib.parse.parse_qs(query_str)
+            if "__path" in params and params["__path"]:
+                extracted = params["__path"][0].lstrip("/")
+                target_path = "/" + extracted
+                
+                # Reconstruct query string without __path parameter
+                clean_params = [(k, v) for k, vs in params.items() if k != "__path" for v in vs]
+                new_query = urllib.parse.urlencode(clean_params)
+                
+                scope["path"] = target_path
+                scope["raw_path"] = target_path.encode("latin1")
+                scope["query_string"] = new_query.encode("latin1")
+                print(f"[VERCEL ASGI] Rewrite __path='{extracted}' -> target_path='{target_path}', query='{new_query}'")
+            elif current_path in ["/api/index.py", "/api", "/api/"]:
+                # Fallback to health endpoint
+                scope["path"] = "/health"
+                scope["raw_path"] = b"/health"
 
         await self.asgi_app(scope, receive, send)
 
