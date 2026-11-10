@@ -50,7 +50,11 @@ docx_builder = DocxBuilder(TEMPLATES_DIR)
 pdf_renderer = PdfRenderer()
 
 # Mount output directory for previews
-app.mount("/static/output", StaticFiles(directory=str(OUTPUT_DIR)), name="output")
+try:
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    app.mount("/static/output", StaticFiles(directory=str(OUTPUT_DIR)), name="output")
+except Exception as e:
+    print(f"Warning mounting output directory: {e}")
 
 # Mount frontend dist if exists
 frontend_dist = ROOT_DIR / "frontend" / "dist"
@@ -814,21 +818,27 @@ def _auto_init_state():
     The active studio workspace starts clean by default.
     """
     # 1. Initialize Guidelines so university format is ready
-    sample_root = Path(r"C:\Users\anaha\mpk\EXAM PAPER MAKING SYSTEM")
-    if sample_root.exists():
-        guidelines_path = sample_root / "EXAM GUIDELINES AND PAPER FORMATS" / "Exam Guidelines.docx"
-        subjects_path = sample_root / "EXAM GUIDELINES AND PAPER FORMATS" / "Question paper subject wise.docx"
-        if guidelines_path.exists():
-            g_info = ingestion_engine.extract_guidelines(guidelines_path)
-            g_info["file_name"] = "Exam Guidelines.docx"
-            if subjects_path.exists():
-                s_info = ingestion_engine.extract_guidelines(subjects_path)
-                g_info["subjects_detected"] = s_info.get("subjects_detected", [])
-            state["guidelines"] = g_info
-            state["subjects"] = g_info.get("subjects_detected", [])
+    guidelines_path = BASE_DIR / "templates" / "Exam Guidelines.docx"
+    subjects_path = BASE_DIR / "templates" / "Question paper subject wise.docx"
+    if not guidelines_path.exists():
+        sample_root = Path(r"C:\Users\anaha\mpk\EXAM PAPER MAKING SYSTEM")
+        if sample_root.exists():
+            guidelines_path = sample_root / "EXAM GUIDELINES AND PAPER FORMATS" / "Exam Guidelines.docx"
+            subjects_path = sample_root / "EXAM GUIDELINES AND PAPER FORMATS" / "Question paper subject wise.docx"
+
+    if guidelines_path.exists():
+        g_info = ingestion_engine.extract_guidelines(guidelines_path)
+        g_info["file_name"] = "Exam Guidelines.docx"
+        if subjects_path.exists():
+            s_info = ingestion_engine.extract_guidelines(subjects_path)
+            g_info["subjects_detected"] = s_info.get("subjects_detected", [])
+        state["guidelines"] = g_info
+        state["subjects"] = g_info.get("subjects_detected", [])
 
     # 2. Archive pre-rendered sample papers into state["history"]
     manifest_path = OUTPUT_DIR / "papers_manifest.json"
+    if not manifest_path.exists():
+        manifest_path = BASE_DIR / "output" / "papers_manifest.json"
     if manifest_path.exists() and not state.get("history"):
         try:
             with open(manifest_path, "r", encoding="utf-8") as f:
