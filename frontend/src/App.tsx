@@ -552,12 +552,12 @@ export default function App() {
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
-                      {/* High-Craft Clay Syllabus Asset */}
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.12)] bg-[#FAF4F0] shrink-0 shadow-xs">
+                      {/* High-Craft Studio 3D Magnifying Glass Asset (from Image 4) */}
+                      <div className="w-14 h-14 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.1)] bg-[#ECEAE5] shrink-0 p-1 flex items-center justify-center shadow-xs">
                         <img 
-                          src="/assets/clay-syllabus.jpg" 
-                          alt="Syllabus stack" 
-                          className="w-full h-full object-cover"
+                          src="/assets/asset-magnifier.png" 
+                          alt="Notes Inspection Lens" 
+                          className="w-full h-full object-contain"
                         />
                       </div>
                       <div>
@@ -745,12 +745,12 @@ export default function App() {
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
-                      {/* High-Craft Clay University Seal Asset */}
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.12)] bg-[#FAF4F0] shrink-0 shadow-xs">
+                      {/* High-Craft Studio 3D Map Pin Asset (from Image 4) */}
+                      <div className="w-14 h-14 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.1)] bg-[#ECEAE5] shrink-0 p-1 flex items-center justify-center shadow-xs">
                         <img 
-                          src="/assets/clay-seal.jpg" 
-                          alt="University Seal" 
-                          className="w-full h-full object-cover"
+                          src="/assets/asset-mappin.png" 
+                          alt="University Benchmark" 
+                          className="w-full h-full object-contain"
                         />
                       </div>
                       <div>
@@ -861,12 +861,12 @@ export default function App() {
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
-                      {/* High-Craft Clay Drafting Pen Asset */}
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.12)] bg-[#FAF4F0] shrink-0 shadow-xs">
+                      {/* High-Craft Studio 3D VR Headset Asset (from Image 4) */}
+                      <div className="w-14 h-14 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.1)] bg-[#ECEAE5] shrink-0 p-1 flex items-center justify-center shadow-xs">
                         <img 
-                          src="/assets/clay-pen.jpg" 
-                          alt="Drafting Pen" 
-                          className="w-full h-full object-cover"
+                          src="/assets/asset-vr.png" 
+                          alt="AI Synthesis Engine" 
+                          className="w-full h-full object-contain"
                         />
                       </div>
                       <div>
@@ -1193,6 +1193,80 @@ export default function App() {
                   ))}
                 </div>
               )}
+            </section>
+
+            {/* Studio Standards & Academic Insights (Directly from Image 4) */}
+            <section className="space-y-4 pt-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#F6440E]"></span>
+                  <h3 className="text-xl sm:text-2xl font-semibold text-[#2E2A14] tracking-[-0.03em]">
+                    Academic Standards & System Insights
+                  </h3>
+                </div>
+                <span className="font-mono text-xs text-[#777972] uppercase tracking-wider hidden sm:inline">
+                  Verified Studio Architecture
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {/* Item 1: VR Headset */}
+                <div className="tomas-card p-5 flex items-center gap-4 hover:border-[#F6440E]/40 transition-colors">
+                  <div className="w-20 h-20 rounded-xl bg-[#ECEAE5] border border-[rgba(46,42,20,0.08)] p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="/assets/asset-vr.png" 
+                      alt="AI Verification Engine" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-mono text-[#777972] uppercase block">
+                      Artificial Intelligence
+                    </span>
+                    <h4 className="text-sm font-semibold text-[#2E2A14] tracking-[-0.02em] leading-snug">
+                      Harnessing LLM verification to generate non-overlapping question banks.
+                    </h4>
+                  </div>
+                </div>
+
+                {/* Item 2: Map Pin */}
+                <div className="tomas-card p-5 flex items-center gap-4 hover:border-[#F6440E]/40 transition-colors">
+                  <div className="w-20 h-20 rounded-xl bg-[#ECEAE5] border border-[rgba(46,42,20,0.08)] p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="/assets/asset-mappin.png" 
+                      alt="Institutional Standards" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-mono text-[#777972] uppercase block">
+                      Institutional Standards
+                    </span>
+                    <h4 className="text-sm font-semibold text-[#2E2A14] tracking-[-0.02em] leading-snug">
+                      Anchoring examination papers directly to official 70 and 75-mark formats.
+                    </h4>
+                  </div>
+                </div>
+
+                {/* Item 3: Magnifier */}
+                <div className="tomas-card p-5 flex items-center gap-4 hover:border-[#F6440E]/40 transition-colors">
+                  <div className="w-20 h-20 rounded-xl bg-[#ECEAE5] border border-[rgba(46,42,20,0.08)] p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="/assets/asset-magnifier.png" 
+                      alt="Syllabus Inspection" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-mono text-[#777972] uppercase block">
+                      Syllabus Inspection
+                    </span>
+                    <h4 className="text-sm font-semibold text-[#2E2A14] tracking-[-0.02em] leading-snug">
+                      Deep topic extraction across notes with verified Hindi Devanagari translation.
+                    </h4>
+                  </div>
+                </div>
+              </div>
             </section>
 
             {/* Editorial Professor Quality Section (Inspired by Image 3) */}
