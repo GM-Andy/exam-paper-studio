@@ -34,10 +34,13 @@ output/
 *.docx
 *.zip
 
-# Whitelist official templates
+# Whitelist official templates and sample data
 !backend/templates/
 !backend/templates/*
 !backend/templates/*.docx
+!backend/sample_data/
+!backend/sample_data/*
+!backend/sample_data/notes/*
 
 scratch/
 *.ps1.tmp

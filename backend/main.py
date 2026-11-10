@@ -212,19 +212,17 @@ def load_sample_data():
     """
     Loads sample university guidelines, templates, and the 4 MA Sociology notes into the active workspace.
     """
-    sample_root = Path(r"C:\Users\anaha\mpk\EXAM PAPER MAKING SYSTEM")
-    if not sample_root.exists():
-        sample_root = BASE_DIR
-        
-    guidelines_dir = sample_root / "EXAM GUIDELINES AND PAPER FORMATS"
-    notes_dir = sample_root / "MA_NOTES"
+    sample_notes_json = BASE_DIR / "sample_data" / "sample_notes.json"
+    manifest_path = BASE_DIR / "sample_data" / "sample_manifest.json"
 
     # 1. Load Guidelines
-    guidelines_path = guidelines_dir / "Exam Guidelines.docx"
-    subjects_path = guidelines_dir / "Question paper subject wise.docx"
+    guidelines_path = BASE_DIR / "templates" / "Exam Guidelines.docx"
+    subjects_path = BASE_DIR / "templates" / "Question paper subject wise.docx"
     if not guidelines_path.exists():
-        guidelines_path = BASE_DIR / "templates" / "Exam Guidelines.docx"
-        subjects_path = BASE_DIR / "templates" / "Question paper subject wise.docx"
+        sample_root = Path(r"C:\Users\anaha\mpk\EXAM PAPER MAKING SYSTEM")
+        if sample_root.exists():
+            guidelines_path = sample_root / "EXAM GUIDELINES AND PAPER FORMATS" / "Exam Guidelines.docx"
+            subjects_path = sample_root / "EXAM GUIDELINES AND PAPER FORMATS" / "Question paper subject wise.docx"
     
     if guidelines_path.exists():
         g_info = ingestion_engine.extract_guidelines(guidelines_path)
@@ -237,20 +235,81 @@ def load_sample_data():
 
     # 2. Load Notes into state
     state["notes"] = []
-    if notes_dir.exists():
-        for f in sorted(notes_dir.glob("*.pdf")):
-            note_info = ingestion_engine.extract_notes_from_pdf(f)
-            note_info["id"] = f"note-{uuid.uuid4().hex[:8]}"
-            note_info["path"] = str(f)
-            note_info["selected"] = True
-            note_info["uploaded_at"] = time.time()
-            prog, sem, sname, scode, missing = infer_program_and_semester(note_info)
-            note_info["program_name"] = prog
-            note_info["semester"] = sem
-            note_info["subject_name"] = sname
-            note_info["subject_code"] = scode
-            note_info["code_missing"] = missing
-            state["notes"].append(note_info)
+    if sample_notes_json.exists():
+        try:
+            with open(sample_notes_json, "r", encoding="utf-8") as f:
+                state["notes"] = json.load(f)
+                for n in state["notes"]:
+                    n["selected"] = True
+        except Exception as e:
+            print(f"Error loading sample_notes.json: {e}")
+            
+    if not state["notes"]:
+        notes_dir = BASE_DIR / "sample_data" / "notes"
+        if not notes_dir.exists():
+            sample_root = Path(r"C:\Users\anaha\mpk\EXAM PAPER MAKING SYSTEM")
+            if sample_root.exists():
+                notes_dir = sample_root / "MA_NOTES"
+        if notes_dir.exists():
+            for f in sorted(notes_dir.glob("*.pdf")):
+                note_info = ingestion_engine.extract_notes_from_pdf(f)
+                note_info["id"] = f"note-{uuid.uuid4().hex[:8]}"
+                note_info["path"] = str(f)
+                note_info["selected"] = True
+                note_info["uploaded_at"] = time.time()
+                prog, sem, sname, scode, missing = infer_program_and_semester(note_info)
+                note_info["program_name"] = prog
+                note_info["semester"] = sem
+                note_info["subject_name"] = sname
+                note_info["subject_code"] = scode
+                note_info["code_missing"] = missing
+                state["notes"].append(note_info)
+
+    # 3. Load Sample Papers into state["papers"] and state["history"]
+    if not manifest_path.exists():
+        manifest_path = OUTPUT_DIR / "papers_manifest.json"
+        if not manifest_path.exists():
+            manifest_path = BASE_DIR / "output" / "papers_manifest.json"
+
+    if manifest_path.exists():
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as f:
+                manifest = json.load(f)
+            state["papers"] = {}
+            sample_papers = []
+            for pid, d in manifest.items():
+                p = ExamPaper(
+                    id=d['id'],
+                    set_name=d['set_name'],
+                    program_name=d.get('program_name', "Master of Arts (Sociology)"),
+                    course_code=d['course_code'],
+                    subject_name=d['subject_name'],
+                    semester=d.get('semester', "III"),
+                    max_marks=d.get('max_marks', 70),
+                    is_bilingual=d.get('is_bilingual', True),
+                    section_a_questions=[Question(**q) for q in d.get('section_a_questions', d.get('section_a', []))],
+                    section_b_questions=[Question(**q) for q in d.get('section_b_questions', d.get('section_b', []))],
+                    section_c_questions=[Question(**q) for q in d.get('section_c_questions', d.get('section_c', []))],
+                    overlap_with_partner=d.get('overlap_with_partner', 10.0),
+                    page_count=d.get('page_count', 2),
+                    docx_path=d.get('docx_path'),
+                    pdf_path=d.get('pdf_path'),
+                    preview_images=d.get('preview_images', [])
+                )
+                state["papers"][p.id] = p
+                sample_papers.append(serialize_paper(p))
+            
+            state["history"] = [
+                {
+                    "batch_id": "sample-archive-ma-soc-dec-2026",
+                    "timestamp": "Sample Archive • MA Sociology",
+                    "instruction": "Initial Sample: 4 MA Sociology Subjects (70 Marks Bilingual A&B)",
+                    "total_papers": len(sample_papers),
+                    "papers": sample_papers
+                }
+            ]
+        except Exception as e:
+            print(f"Error loading sample manifest: {e}")
 
     return get_session_state()
 
@@ -753,7 +812,11 @@ def download_docx(paper_id: str):
         raise HTTPException(status_code=404, detail="Paper not found")
 
     if not paper.docx_path or not Path(paper.docx_path).exists():
-        raise HTTPException(status_code=404, detail="DOCX file not generated")
+        try:
+            d_path = docx_builder.generate_paper(paper)
+            paper.docx_path = str(d_path)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"DOCX generation failed: {e}")
         
     clean_subj = re.sub(r'[^\w\s-]', '', paper.subject_name).replace(" ", "_")
     clean_prog = re.sub(r'[^\w]', '', paper.program_name)
@@ -781,6 +844,22 @@ def download_pdf(paper_id: str):
         raise HTTPException(status_code=404, detail="Paper not found")
 
     if not paper.pdf_path or not Path(paper.pdf_path).exists():
+        try:
+            if not paper.docx_path or not Path(paper.docx_path).exists():
+                paper.docx_path = str(docx_builder.generate_paper(paper))
+            p_path = pdf_renderer.render_paper_pdf(paper, paper.docx_path)
+            paper.pdf_path = str(p_path)
+        except Exception as e:
+            print(f"On-demand PDF render notice: {e}")
+
+    if not paper.pdf_path or not Path(paper.pdf_path).exists():
+        # If PDF renderer couldn't generate PDF, serve the DOCX as fallback
+        if paper.docx_path and Path(paper.docx_path).exists():
+            return FileResponse(
+                paper.docx_path,
+                media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                filename=f"Set_{paper.set_name}_{paper.course_code}.docx"
+            )
         raise HTTPException(status_code=404, detail="PDF file not generated")
         
     clean_subj = re.sub(r'[^\w\s-]', '', paper.subject_name).replace(" ", "_")
@@ -832,6 +911,12 @@ def download_all_zip():
             clean_sem = re.sub(r'[^\w]', '', paper.semester)
             fn_base = f"Set_{paper.set_name}_{paper.course_code}_{clean_subj}_{clean_prog}_Sem_{clean_sem}"
             
+            if not paper.docx_path or not Path(paper.docx_path).exists():
+                try:
+                    paper.docx_path = str(docx_builder.generate_paper(paper))
+                except Exception:
+                    pass
+
             if paper.docx_path and Path(paper.docx_path).exists():
                 zip_file.write(paper.docx_path, arcname=f"Word/{fn_base}.docx")
             if paper.pdf_path and Path(paper.pdf_path).exists():
@@ -845,68 +930,12 @@ def download_all_zip():
 
 def _auto_init_state():
     """
-    Initializes guidelines and archives the pre-rendered sample batch into memory history.
-    The active studio workspace starts clean by default.
+    Initializes guidelines, loads sample notes, and loads sample papers so the studio is immediately ready to view and use.
     """
-    # 1. Initialize Guidelines so university format is ready
-    guidelines_path = BASE_DIR / "templates" / "Exam Guidelines.docx"
-    subjects_path = BASE_DIR / "templates" / "Question paper subject wise.docx"
-    if not guidelines_path.exists():
-        sample_root = Path(r"C:\Users\anaha\mpk\EXAM PAPER MAKING SYSTEM")
-        if sample_root.exists():
-            guidelines_path = sample_root / "EXAM GUIDELINES AND PAPER FORMATS" / "Exam Guidelines.docx"
-            subjects_path = sample_root / "EXAM GUIDELINES AND PAPER FORMATS" / "Question paper subject wise.docx"
-
-    if guidelines_path.exists():
-        g_info = ingestion_engine.extract_guidelines(guidelines_path)
-        g_info["file_name"] = "Exam Guidelines.docx"
-        if subjects_path.exists():
-            s_info = ingestion_engine.extract_guidelines(subjects_path)
-            g_info["subjects_detected"] = s_info.get("subjects_detected", [])
-        state["guidelines"] = g_info
-        state["subjects"] = g_info.get("subjects_detected", [])
-
-    # 2. Archive pre-rendered sample papers into state["history"]
-    manifest_path = OUTPUT_DIR / "papers_manifest.json"
-    if not manifest_path.exists():
-        manifest_path = BASE_DIR / "output" / "papers_manifest.json"
-    if manifest_path.exists() and not state.get("history"):
-        try:
-            with open(manifest_path, "r", encoding="utf-8") as f:
-                manifest = json.load(f)
-            sample_papers = []
-            for pid, d in manifest.items():
-                p = ExamPaper(
-                    id=d['id'],
-                    set_name=d['set_name'],
-                    program_name=d.get('program_name', "Master of Arts (Sociology)"),
-                    course_code=d['course_code'],
-                    subject_name=d['subject_name'],
-                    semester=d.get('semester', "III"),
-                    max_marks=d.get('max_marks', 70),
-                    is_bilingual=d.get('is_bilingual', True),
-                    section_a_questions=[Question(**q) for q in d.get('section_a_questions', d.get('section_a', []))],
-                    section_b_questions=[Question(**q) for q in d.get('section_b_questions', d.get('section_b', []))],
-                    section_c_questions=[Question(**q) for q in d.get('section_c_questions', d.get('section_c', []))],
-                    overlap_with_partner=d.get('overlap_with_partner', 10.0),
-                    page_count=d.get('page_count', 2),
-                    docx_path=d.get('docx_path'),
-                    pdf_path=d.get('pdf_path'),
-                    preview_images=d.get('preview_images', [])
-                )
-                sample_papers.append(serialize_paper(p))
-            
-            state["history"] = [
-                {
-                    "batch_id": "sample-archive-ma-soc-dec-2026",
-                    "timestamp": "Sample Archive • MA Sociology",
-                    "instruction": "Initial Sample: 4 MA Sociology Subjects (70 Marks Bilingual A&B)",
-                    "total_papers": len(sample_papers),
-                    "papers": sample_papers
-                }
-            ]
-            print(f"Archived {len(sample_papers)} verified sample papers into memory history.")
-        except Exception as e:
-            print(f"Auto-load manifest error: {e}")
+    try:
+        load_sample_data()
+        print(f"Auto-initialized workspace: {len(state['notes'])} notes, {len(state['papers'])} active papers.")
+    except Exception as e:
+        print(f"Auto-init error: {e}")
 
 _auto_init_state()

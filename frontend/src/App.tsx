@@ -5,7 +5,6 @@ import {
   Check, Zap, Trash2, CheckSquare, 
   Square, History, Layers, ArrowLeft, ArrowRight
 } from 'lucide-react';
-import Lenis from 'lenis';
 import confetti from 'canvas-confetti';
 
 interface Question {
@@ -121,26 +120,6 @@ export default function App() {
   const [manualEn, setManualEn] = useState('');
   const [manualHi, setManualHi] = useState('');
   const [editingLoading, setEditingLoading] = useState(false);
-
-  // Initialize Lenis smooth scroll
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      smoothWheel: true,
-    });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-    };
-  }, []);
 
   // Fetch initial session, papers, history
   useEffect(() => {
@@ -520,16 +499,8 @@ export default function App() {
         {/* ================= TAB 1: ACTIVE STUDIO ================= */}
         {activeTab === 'studio' && (
           <>
-            {/* Minimal Punchy Hero — Editorial Two-Tone Statement with Layered Watermark */}
-            <div className="relative text-center max-w-3xl mx-auto pt-6 pb-2 overflow-hidden">
-              {/* Giant Background Watermark Typography (as in Image 1) */}
-              <div 
-                aria-hidden="true" 
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none opacity-[0.035] text-[130px] sm:text-[190px] font-bold text-[#2E2A14] tracking-tighter whitespace-nowrap z-0 uppercase"
-              >
-                EXAM STUDIO
-              </div>
-
+            {/* Minimal Punchy Hero — Editorial Two-Tone Statement */}
+            <div className="relative text-center max-w-3xl mx-auto pt-6 pb-2">
               <div className="relative z-10 space-y-3">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(46,42,20,0.04)] border border-[rgba(46,42,20,0.1)] text-xs text-[#777972]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#F6440E]"></span>
@@ -544,7 +515,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* 3-Zone Bento Grid — Tactile 3D Clay Assets (from Image 4) */}
+            {/* 3-Zone Bento Grid — Tactile 3D Assets (from Image 4) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               {/* Zone 1: Active Notes & Selection */}
@@ -555,7 +526,7 @@ export default function App() {
                       {/* High-Craft Studio 3D Magnifying Glass Asset (from Image 4) */}
                       <div className="w-14 h-14 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.1)] bg-[#ECEAE5] shrink-0 p-1 flex items-center justify-center shadow-xs">
                         <img 
-                          src="/assets/asset-magnifier.png" 
+                          src="/assets/asset-magnifier.jpg" 
                           alt="Notes Inspection Lens" 
                           className="w-full h-full object-contain"
                         />
@@ -748,7 +719,7 @@ export default function App() {
                       {/* High-Craft Studio 3D Map Pin Asset (from Image 4) */}
                       <div className="w-14 h-14 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.1)] bg-[#ECEAE5] shrink-0 p-1 flex items-center justify-center shadow-xs">
                         <img 
-                          src="/assets/asset-mappin.png" 
+                          src="/assets/asset-mappin.jpg" 
                           alt="University Benchmark" 
                           className="w-full h-full object-contain"
                         />
@@ -864,7 +835,7 @@ export default function App() {
                       {/* High-Craft Studio 3D VR Headset Asset (from Image 4) */}
                       <div className="w-14 h-14 rounded-xl overflow-hidden border border-[rgba(46,42,20,0.1)] bg-[#ECEAE5] shrink-0 p-1 flex items-center justify-center shadow-xs">
                         <img 
-                          src="/assets/asset-vr.png" 
+                          src="/assets/asset-vr.jpg" 
                           alt="AI Synthesis Engine" 
                           className="w-full h-full object-contain"
                         />
@@ -1214,7 +1185,7 @@ export default function App() {
                 <div className="tomas-card p-5 flex items-center gap-4 hover:border-[#F6440E]/40 transition-colors">
                   <div className="w-20 h-20 rounded-xl bg-[#ECEAE5] border border-[rgba(46,42,20,0.08)] p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
                     <img 
-                      src="/assets/asset-vr.png" 
+                      src="/assets/asset-vr.jpg" 
                       alt="AI Verification Engine" 
                       className="w-full h-full object-contain"
                     />
@@ -1233,7 +1204,7 @@ export default function App() {
                 <div className="tomas-card p-5 flex items-center gap-4 hover:border-[#F6440E]/40 transition-colors">
                   <div className="w-20 h-20 rounded-xl bg-[#ECEAE5] border border-[rgba(46,42,20,0.08)] p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
                     <img 
-                      src="/assets/asset-mappin.png" 
+                      src="/assets/asset-mappin.jpg" 
                       alt="Institutional Standards" 
                       className="w-full h-full object-contain"
                     />
@@ -1252,7 +1223,7 @@ export default function App() {
                 <div className="tomas-card p-5 flex items-center gap-4 hover:border-[#F6440E]/40 transition-colors">
                   <div className="w-20 h-20 rounded-xl bg-[#ECEAE5] border border-[rgba(46,42,20,0.08)] p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
                     <img 
-                      src="/assets/asset-magnifier.png" 
+                      src="/assets/asset-magnifier.jpg" 
                       alt="Syllabus Inspection" 
                       className="w-full h-full object-contain"
                     />
