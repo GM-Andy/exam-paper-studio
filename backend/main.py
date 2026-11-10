@@ -186,10 +186,19 @@ def serialize_paper(p: ExamPaper) -> dict:
         "section_c": [q.dict() for q in p.section_c_questions]
     }
 
+@app.get("/")
+@app.get("/api")
+@app.get("/api/")
+@app.get("/api/index.py")
+def api_index():
+    return {"status": "ok", "app": "Exam Paper Studio API", "version": "2.0.0"}
+
+@app.get("/health")
 @app.get("/api/health")
 def health():
     return {"status": "ok", "app": "Exam Paper Studio", "version": "2.0.0"}
 
+@app.post("/auth/login")
 @app.post("/api/auth/login")
 def login(req: LoginRequest):
     if req.password == APP_PASSWORD or req.password in ["admin", "exam2026", "professor"]:
@@ -197,6 +206,7 @@ def login(req: LoginRequest):
         return {"success": True, "token": "professor-authenticated-session"}
     raise HTTPException(status_code=401, detail="Invalid examination password")
 
+@app.post("/load-sample-data")
 @app.post("/api/load-sample-data")
 def load_sample_data():
     """
@@ -241,6 +251,7 @@ def load_sample_data():
 
     return get_session_state()
 
+@app.get("/session-state")
 @app.get("/api/session-state")
 def get_session_state(clean: Optional[bool] = False):
     if clean:
@@ -327,6 +338,7 @@ def get_session_state(clean: Optional[bool] = False):
         "missing_codes_count": len(active_missing_codes)
     }
 
+@app.post("/notes/{note_id}/update-code")
 @app.post("/api/notes/{note_id}/update-code")
 def update_note_code(note_id: str, req: UpdateNoteCodeRequest):
     for n in state["notes"]:
@@ -338,6 +350,7 @@ def update_note_code(note_id: str, req: UpdateNoteCodeRequest):
             break
     return get_session_state()
 
+@app.post("/notes/toggle-select")
 @app.post("/api/notes/toggle-select")
 def toggle_note_select(req: ToggleSelectRequest):
     for n in state["notes"]:
@@ -346,22 +359,26 @@ def toggle_note_select(req: ToggleSelectRequest):
             break
     return get_session_state()
 
+@app.post("/notes/select-all")
 @app.post("/api/notes/select-all")
 def select_all_notes(select: bool = Query(True)):
     for n in state["notes"]:
         n["selected"] = select
     return get_session_state()
 
+@app.delete("/notes/{note_id}")
 @app.delete("/api/notes/{note_id}")
 def delete_note(note_id: str):
     state["notes"] = [n for n in state["notes"] if n.get("id") != note_id and n.get("file_name") != note_id]
     return get_session_state()
 
+@app.post("/notes/clear")
 @app.post("/api/notes/clear")
 def clear_all_notes():
     state["notes"] = []
     return get_session_state()
 
+@app.post("/session/reset")
 @app.post("/api/session/reset")
 def reset_session():
     state["notes"] = []
@@ -369,6 +386,7 @@ def reset_session():
     state["current_progress"] = {"stage": "idle", "percent": 0, "message": "Ready"}
     return get_session_state()
 
+@app.post("/upload-notes")
 @app.post("/api/upload-notes")
 async def upload_notes(files: List[UploadFile] = File(...)):
     notes_upload_dir = UPLOADS_DIR / "notes"
@@ -397,6 +415,7 @@ async def upload_notes(files: List[UploadFile] = File(...)):
             
     return get_session_state()
 
+@app.post("/upload-guidelines")
 @app.post("/api/upload-guidelines")
 async def upload_guidelines(files: List[UploadFile] = File(...)):
     g_upload_dir = UPLOADS_DIR / "guidelines"
@@ -640,6 +659,7 @@ def _run_generation_job(subject_codes: Optional[List[str]], marks_format: int, i
         "message": f"Successfully generated {len(generated_papers_in_job)} examination papers!"
     }
 
+@app.post("/generate")
 @app.post("/api/generate")
 def start_generation(req: GenerateRequest, background_tasks: BackgroundTasks):
     marks_format = req.marks_format or (state["guidelines"].get("marks_format", 70) if state["guidelines"] else 70)
@@ -648,18 +668,22 @@ def start_generation(req: GenerateRequest, background_tasks: BackgroundTasks):
     background_tasks.add_task(_run_generation_job, req.subject_codes, marks_format, is_bilingual, user_instruction)
     return {"status": "started", "message": "Generation job launched in background."}
 
+@app.get("/progress")
 @app.get("/api/progress")
 def get_progress():
     return state["current_progress"]
 
+@app.get("/papers")
 @app.get("/api/papers")
 def list_papers():
     return [serialize_paper(p) for p in state["papers"].values()]
 
+@app.get("/history")
 @app.get("/api/history")
 def get_history():
     return state.get("history", [])
 
+@app.post("/papers/{paper_id}/edit-question")
 @app.post("/api/papers/{paper_id}/edit-question")
 def edit_question(paper_id: str, req: EditQuestionRequest):
     if paper_id not in state["papers"]:
@@ -705,6 +729,7 @@ def edit_question(paper_id: str, req: EditQuestionRequest):
 
     return {"success": True, "question": target_q.dict(), "page_count": paper.page_count}
 
+@app.get("/papers/{paper_id}/docx")
 @app.get("/api/papers/{paper_id}/docx")
 def download_docx(paper_id: str):
     # Check in active papers or history
@@ -738,6 +763,7 @@ def download_docx(paper_id: str):
         filename=filename
     )
 
+@app.get("/papers/{paper_id}/pdf")
 @app.get("/api/papers/{paper_id}/pdf")
 def download_pdf(paper_id: str):
     paper = state["papers"].get(paper_id)
@@ -765,6 +791,8 @@ def download_pdf(paper_id: str):
         filename=filename
     )
 
+@app.get("/download-all")
+@app.get("/papers/download-all")
 @app.get("/api/download-all")
 @app.get("/api/papers/download-all")
 def download_all_zip():
