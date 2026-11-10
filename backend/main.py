@@ -222,6 +222,9 @@ def load_sample_data():
     # 1. Load Guidelines
     guidelines_path = guidelines_dir / "Exam Guidelines.docx"
     subjects_path = guidelines_dir / "Question paper subject wise.docx"
+    if not guidelines_path.exists():
+        guidelines_path = BASE_DIR / "templates" / "Exam Guidelines.docx"
+        subjects_path = BASE_DIR / "templates" / "Question paper subject wise.docx"
     
     if guidelines_path.exists():
         g_info = ingestion_engine.extract_guidelines(guidelines_path)
