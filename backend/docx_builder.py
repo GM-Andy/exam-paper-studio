@@ -40,13 +40,50 @@ class DocxBuilder:
         self.template_dir = template_dir
 
     def get_template_path(self, marks: int = 70) -> Path:
-        if marks == 75:
-            p = self.template_dir / "75 MARKS PAPER FORMAT.docx"
-        else:
-            p = self.template_dir / "70 MARKS PAPER FORMAT.docx"
-        if not p.exists():
-            raise FileNotFoundError(f"Template not found at {p}")
-        return p
+        target_name = "75 MARKS PAPER FORMAT.docx" if marks == 75 else "70 MARKS PAPER FORMAT.docx"
+        
+        candidates = [
+            self.template_dir / target_name,
+            Path(__file__).resolve().parent / "templates" / target_name,
+            Path(__file__).resolve().parent.parent / "templates" / target_name,
+            Path(r"C:\Users\anaha\mpk\EXAM PAPER MAKING SYSTEM\EXAM GUIDELINES AND PAPER FORMATS") / target_name
+        ]
+        for c in candidates:
+            if c.exists():
+                return c
+        raise FileNotFoundError(f"Template {target_name} not found in any candidates: {candidates}")
+
+    def generate_paper(
+        self,
+        paper: ExamPaper,
+        output_path: Optional[Path] = None,
+        template_override_path: Optional[Path] = None,
+        compact_mode: bool = True
+    ) -> Path:
+        """
+        High-level wrapper to generate the official university DOCX document for an ExamPaper.
+        If output_path is omitted, creates a file in OUTPUT_DIR or paper.docx_path or /tmp.
+        """
+        if output_path is None:
+            if paper.docx_path:
+                output_path = Path(paper.docx_path)
+            else:
+                from config import OUTPUT_DIR
+                clean_subj = "".join([c if c.isalnum() or c in " -_" else "" for c in paper.subject_name]).replace(" ", "_")
+                clean_prog = "".join([c if c.isalnum() else "" for c in paper.program_name])
+                clean_sem = "".join([c if c.isalnum() else "" for c in paper.semester])
+                filename = f"Set_{paper.set_name}_{paper.course_code}_{clean_subj}_{clean_prog}_Sem_{clean_sem}.docx"
+                output_path = OUTPUT_DIR / filename
+                
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        res_path = self.build_exam_docx(
+            paper=paper,
+            output_path=output_path,
+            template_override_path=template_override_path,
+            compact_mode=compact_mode
+        )
+        paper.docx_path = str(res_path)
+        return res_path
 
     def build_exam_docx(
         self,
