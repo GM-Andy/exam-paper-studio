@@ -278,6 +278,13 @@ def load_sample_data():
             state["papers"] = {}
             sample_papers = []
             for pid, d in manifest.items():
+                clean_subj = re.sub(r'[^\w\s-]', '', d.get('subject_name', '')).replace(" ", "_")
+                clean_prog = re.sub(r'[^\w]', '', d.get('program_name', ''))
+                clean_sem = re.sub(r'[^\w]', '', str(d.get('semester', '')))
+                base_name = f"Set_{d['set_name']}_{d['course_code']}_{clean_subj}_{clean_prog}_Sem_{clean_sem}"
+                docx_file_path = OUTPUT_DIR / f"{base_name}.docx"
+                pdf_file_path = OUTPUT_DIR / f"{base_name}.pdf"
+
                 p = ExamPaper(
                     id=d['id'],
                     set_name=d['set_name'],
@@ -292,8 +299,8 @@ def load_sample_data():
                     section_c_questions=[Question(**q) for q in d.get('section_c_questions', d.get('section_c', []))],
                     overlap_with_partner=d.get('overlap_with_partner', 10.0),
                     page_count=d.get('page_count', 2),
-                    docx_path=d.get('docx_path'),
-                    pdf_path=d.get('pdf_path'),
+                    docx_path=str(docx_file_path),
+                    pdf_path=str(pdf_file_path),
                     preview_images=d.get('preview_images', [])
                 )
                 state["papers"][p.id] = p

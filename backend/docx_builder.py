@@ -65,15 +65,12 @@ class DocxBuilder:
         If output_path is omitted, creates a file in OUTPUT_DIR or paper.docx_path or /tmp.
         """
         if output_path is None:
-            if paper.docx_path:
-                output_path = Path(paper.docx_path)
-            else:
-                from config import OUTPUT_DIR
-                clean_subj = "".join([c if c.isalnum() or c in " -_" else "" for c in paper.subject_name]).replace(" ", "_")
-                clean_prog = "".join([c if c.isalnum() else "" for c in paper.program_name])
-                clean_sem = "".join([c if c.isalnum() else "" for c in paper.semester])
-                filename = f"Set_{paper.set_name}_{paper.course_code}_{clean_subj}_{clean_prog}_Sem_{clean_sem}.docx"
-                output_path = OUTPUT_DIR / filename
+            from config import OUTPUT_DIR
+            clean_subj = "".join([c if c.isalnum() or c in " -_" else "" for c in paper.subject_name]).replace(" ", "_")
+            clean_prog = "".join([c if c.isalnum() else "" for c in paper.program_name])
+            clean_sem = "".join([c if c.isalnum() else "" for c in str(paper.semester)])
+            filename = f"Set_{paper.set_name}_{paper.course_code}_{clean_subj}_{clean_prog}_Sem_{clean_sem}.docx"
+            output_path = OUTPUT_DIR / filename
                 
         output_path.parent.mkdir(parents=True, exist_ok=True)
         res_path = self.build_exam_docx(
@@ -278,12 +275,27 @@ class DocxBuilder:
         set_font_run(r_end, "Times New Roman", 10.0, bold=False)
 
         # Save DOCX safely
-        output_path.parent.mkdir(parents=True, exist_ok=True)
         import os
         import tempfile
         import shutil
         import time
-        tmp_fd, tmp_path = tempfile.mkstemp(suffix=".docx", dir=str(output_path.parent))
+        from config import OUTPUT_DIR
+
+        # Make sure parent directory exists and is writable
+        try:
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            test_file = output_path.parent / f".write_test_{int(time.time()*1000)}"
+            test_file.touch()
+            test_file.unlink()
+        except Exception:
+            output_path = OUTPUT_DIR / output_path.name
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        try:
+            tmp_fd, tmp_path = tempfile.mkstemp(suffix=".docx", dir=str(output_path.parent))
+        except Exception:
+            tmp_fd, tmp_path = tempfile.mkstemp(suffix=".docx")
+            
         os.close(tmp_fd)
         doc.save(tmp_path)
         # Attempt move with quick retry if Windows antivirus or indexer holds a brief lock
